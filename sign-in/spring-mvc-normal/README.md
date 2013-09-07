@@ -71,6 +71,6 @@ You can run the application by running the following command at the command prom
 Running Tests
 ================
 
-1.  You can run unit tests by using this command at the command prompt:
+1.  You can run unit tests by running the following command at the command prompt:
 
         mvn test -P dev
