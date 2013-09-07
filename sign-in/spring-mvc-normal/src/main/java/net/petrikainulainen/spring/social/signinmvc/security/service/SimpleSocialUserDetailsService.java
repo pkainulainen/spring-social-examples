@@ -11,6 +11,8 @@ import org.springframework.social.security.SocialUserDetails;
 import org.springframework.social.security.SocialUserDetailsService;
 
 /**
+ * This class delegates requests forward to our UserDetailsService implementation.
+ * This is possible because we use the username of the user as the account ID.
  * @author Petri Kainulainen
  */
 public class SimpleSocialUserDetailsService implements SocialUserDetailsService {
@@ -23,6 +25,13 @@ public class SimpleSocialUserDetailsService implements SocialUserDetailsService 
         this.userDetailsService = userDetailsService;
     }
 
+    /**
+     * Loads the username by using the account ID of the user.
+     * @param userId    The account ID of the requested user.
+     * @return  The information of the requested user.
+     * @throws UsernameNotFoundException    Thrown if no user is found.
+     * @throws DataAccessException
+     */
     @Override
     public SocialUserDetails loadUserByUserId(String userId) throws UsernameNotFoundException, DataAccessException {
         LOGGER.debug("Loading user by user id: {}", userId);

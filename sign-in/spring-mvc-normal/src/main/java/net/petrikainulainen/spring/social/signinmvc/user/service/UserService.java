@@ -8,5 +8,10 @@ import net.petrikainulainen.spring.social.signinmvc.user.model.User;
  */
 public interface UserService {
 
-    public User registerNewUserAccount(RegistrationForm dto);
+    /**
+     * Creates a new user account to the service.
+     * @param userAccountData   The information of the created user account.
+     * @return  The information of the created user account.
+     */
+    public User registerNewUserAccount(RegistrationForm userAccountData);
 }

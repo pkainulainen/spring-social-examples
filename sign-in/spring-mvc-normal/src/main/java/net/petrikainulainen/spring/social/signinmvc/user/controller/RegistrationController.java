@@ -42,6 +42,9 @@ public class RegistrationController {
         this.service = service;
     }
 
+    /**
+     * Renders the registration page.
+     */
     @RequestMapping(value = "/user/register", method = RequestMethod.GET)
     public String showRegistrationForm(WebRequest request, Model model) {
         LOGGER.debug("Rendering registration page.");
@@ -56,6 +59,13 @@ public class RegistrationController {
         return VIEW_NAME_REGISTRATION_PAGE;
     }
 
+    /**
+     * Creates the form object used in the registration form.
+     * @param connection
+     * @return  If a user is signing in by using a social provider, this method returns a form
+     *          object populated by the values given by the provider. Otherwise this method returns
+     *          an empty form object (normal form registration).
+     */
     private RegistrationForm createRegistrationDTO(Connection<?> connection) {
         RegistrationForm dto = new RegistrationForm();
 
@@ -72,6 +82,9 @@ public class RegistrationController {
         return dto;
     }
 
+    /**
+     * Processes the form submissions of the registration form.
+     */
     @RequestMapping(value ="/user/register", method = RequestMethod.POST)
     public String registerUserAccount(@Valid @ModelAttribute("user") RegistrationForm userAccountData,
                                       BindingResult result,
@@ -87,8 +100,12 @@ public class RegistrationController {
         User registered = service.registerNewUserAccount(userAccountData);
         LOGGER.debug("Registered user account with information: {}", registered);
 
+        //Logs the user in.
         SecurityUtil.logInUser(registered);
         LOGGER.debug("User {} has been signed in");
+        //If the user is signing in by using a social provider, this method call stores
+        //the connection to the UserConnection table. Otherwise, this method does not
+        //do anything.
         ProviderSignInUtils.handlePostSignUp(registered.getEmail(), request);
 
         return "redirect:/";
