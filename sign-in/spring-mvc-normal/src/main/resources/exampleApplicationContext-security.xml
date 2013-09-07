@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:http="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+
+    <!-- Static resources such as CSS and JS files are ignored by Spring Security -->
+    <security:http pattern="/static/**" security="none" />
+
+    <security:http use-expressions="true">
+        <security:form-login
+                login-page="/login"
+                login-processing-url="/login/authenticate"
+                authentication-failure-url="/login?param.error=bad_credentials"
+                username-parameter="username"
+                password-parameter="password"/>
+
+        <security:logout
+                logout-url="/logout"
+                logout-success-url="/login"
+                delete-cookies="JESSIONID"/>
+
+        <security:intercept-url pattern="/auth/**" access="permitAll"/>
+        <security:intercept-url pattern="/login" access="permitAll"/>
+        <security:intercept-url pattern="/signin/**" access="permitAll"/>
+        <security:intercept-url pattern="/signup/**" access="permitAll"/>
+        <security:intercept-url pattern="/user/register/**" access="permitAll"/>
+        <security:intercept-url pattern="/**" access="hasRole('ROLE_USER')"/>
+
+        <security:custom-filter ref="socialAuthenticationFilter" before="PRE_AUTH_FILTER" />
+    </security:http>
+
+    <security:authentication-manager alias="authenticationManager">
+        <security:authentication-provider user-service-ref="userDetailsService">
+            <security:password-encoder ref="passwordEncoder"/>
+        </security:authentication-provider>
+
+        <security:authentication-provider ref="socialAuthenticationProvider"/>
+    </security:authentication-manager>
+
+    <bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
+        <constructor-arg index="0" value="10"/>
+    </bean>
+
+    <bean id="socialAuthenticationFilter" class="org.springframework.social.security.SocialAuthenticationFilter">
+        <constructor-arg index="0" ref="authenticationManager"/>
+        <constructor-arg index="1" ref="userIdSource"/>
+        <constructor-arg index="2" ref="usersConnectionRepository"/>
+        <constructor-arg index="3" ref="connectionFactoryLocator"/>
+
+        <property name="signupUrl" value="/user/register"/>
+    </bean>
+
+    <bean id="socialAuthenticationProvider" class="org.springframework.social.security.SocialAuthenticationProvider">
+        <constructor-arg index="0" ref="usersConnectionRepository"/>
+        <constructor-arg index="1" ref="socialUserDetailsService"/>
+    </bean>
+
+    <bean id="socialUserDetailsService" class="net.petrikainulainen.spring.social.signinmvc.security.service.SimpleSocialUserDetailsService">
+        <constructor-arg index="0" ref="userDetailsService"/>
+    </bean>
+
+    <bean id="textEncryptor" class="org.springframework.security.crypto.encrypt.Encryptors" factory-method="noOpText" />
+
+    <bean id="userDetailsService" class="net.petrikainulainen.spring.social.signinmvc.security.service.RepositoryUserDetailsService"/>
+
+    <bean id="userIdSource" class="org.springframework.social.security.AuthenticationNameUserIdSource"/>
+</beans>

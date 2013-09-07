@@ -62,8 +62,8 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
                     .authorizeRequests()
                         //Anyone can access the urls
                         .antMatchers(
-                                "/login",
                                 "/auth/**",
+                                "/login",
                                 "/signin/**",
                                 "/signup/**",
                                 "/user/register/**"
