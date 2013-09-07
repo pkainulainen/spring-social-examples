@@ -44,19 +44,14 @@ You can configure the application by following these steps:
 1.  Configure the database connection. The database connection is configured in the file *profiles/dev/config.properties*.
 
     db.driver=com.mysql.jdbc.Driver
-    #Sets the JDBC connection url
     db.url=jdbc:mysql://localhost:3306/socialtwitter
-    #Sets the database username
     db.username=socialtwitter
-    #Sets the database password
     db.password=password
 
 2.  Configure the Twitter application. You can configure your twitter application by creating a file
     *profiles/dev/socialConfig.properties*. The contents of this file looks as follows:
 
-    #Sets the application's consumer key (you get this from Twitter)
     twitter.consumer.key=foo
-    #Sets the application's consumer secret (you get this from Twitter)
     twitter.consumer.secret=bar
 
 Initializing the database
