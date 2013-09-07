@@ -9,11 +9,13 @@
        http://www.springframework.org/schema/social http://www.springframework.org/schema/social/spring-social.xsd
        http://www.springframework.org/schema/social/twitter http://www.springframework.org/schema/social/spring-social-twitter.xsd">
 
-    <context:property-placeholder location="classpath:application.properties"/>
+    <beans profile="application">
+        <context:property-placeholder location="classpath:application.properties"/>
 
-    <twitter:config app-id="${twitter.consumer.key}" app-secret="${twitter.consumer.secret}"/>
+        <twitter:config app-id="${twitter.consumer.key}" app-secret="${twitter.consumer.secret}"/>
 
-    <social:jdbc-connection-repository/>
+        <social:jdbc-connection-repository/>
 
-    <bean id="connectController" class="org.springframework.social.connect.web.ConnectController" autowire="constructor"/>
+        <bean id="connectController" class="org.springframework.social.connect.web.ConnectController" autowire="constructor"/>
+    </beans>
 </beans>
