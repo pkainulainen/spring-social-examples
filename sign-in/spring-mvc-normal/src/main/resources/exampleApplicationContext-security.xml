@@ -13,7 +13,7 @@
         <security:form-login
                 login-page="/login"
                 login-processing-url="/login/authenticate"
-                authentication-failure-url="/login?param.error=bad_credentials"
+                authentication-failure-url="/login?error=bad_credentials"
                 username-parameter="username"
                 password-parameter="password"/>
 
