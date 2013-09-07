@@ -5,6 +5,7 @@ import net.petrikainulainen.spring.social.signinmvc.user.dto.RegistrationFormBui
 import net.petrikainulainen.spring.social.signinmvc.user.model.SocialMediaService;
 import net.petrikainulainen.spring.social.signinmvc.user.model.User;
 import net.petrikainulainen.spring.social.signinmvc.user.repository.UserRepository;
+import org.fest.assertions.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +15,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import static com.googlecode.catchexception.CatchException.catchException;
+import static com.googlecode.catchexception.CatchException.caughtException;
 import static net.petrikainulainen.spring.social.signinmvc.user.model.UserAssert.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -44,7 +47,7 @@ public class RepositoryUserServiceTest {
     }
 
     @Test
-    public void registerNewUserAccount_ViaSocialSignIn_ShouldCreateNewUserAccountAndSetSocialProvider() {
+    public void registerNewUserAccount_ViaSocialSignIn_ShouldCreateNewUserAccountAndSetSocialProvider() throws DuplicateEmailException {
         RegistrationForm registration = new RegistrationFormBuilder()
                 .email(EMAIL)
                 .firstName(FIRST_NAME)
@@ -52,6 +55,7 @@ public class RepositoryUserServiceTest {
                 .signInProvider(SIGN_IN_PROVIDER)
                 .build();
 
+        when(repositoryMock.findByEmail(EMAIL)).thenReturn(null);
         when(repositoryMock.save(isA(User.class))).thenAnswer(new Answer<User>() {
             @Override
             public User answer(InvocationOnMock invocation) throws Throwable {
@@ -70,13 +74,36 @@ public class RepositoryUserServiceTest {
                 .isRegisteredUser()
                 .isRegisteredByUsingSignInProvider(SIGN_IN_PROVIDER);
 
+        verify(repositoryMock, times(1)).findByEmail(EMAIL);
         verify(repositoryMock, times(1)).save(registered);
         verifyNoMoreInteractions(repositoryMock);
         verifyZeroInteractions(passwordEncoderMock);
     }
 
     @Test
-    public void registerNewUserAccount_ViaNormalSignIn_ShouldCreateNewUserAccountWithoutSocialProvider() {
+    public void registerNewUserAccount_ViaSocialSignInAndDuplicateEmailIsFound_ShouldThrowException() throws DuplicateEmailException {
+        RegistrationForm registration = new RegistrationFormBuilder()
+                .email(EMAIL)
+                .firstName(FIRST_NAME)
+                .lastName(LAST_NAME)
+                .signInProvider(SIGN_IN_PROVIDER)
+                .build();
+        when(repositoryMock.findByEmail(EMAIL)).thenReturn(new User());
+
+        catchException(service).registerNewUserAccount(registration);
+
+        Assertions.assertThat(caughtException())
+                .isExactlyInstanceOf(DuplicateEmailException.class)
+                .hasMessage("The email address: " + EMAIL + " is already in use.")
+                .hasNoCause();
+
+        verify(repositoryMock, times(1)).findByEmail(EMAIL);
+        verifyNoMoreInteractions(repositoryMock);
+        verifyZeroInteractions(passwordEncoderMock);
+    }
+
+    @Test
+    public void registerNewUserAccount_ViaNormalSignIn_ShouldCreateNewUserAccountWithoutSocialProvider() throws DuplicateEmailException {
         RegistrationForm registration = new RegistrationFormBuilder()
                 .email(EMAIL)
                 .firstName(FIRST_NAME)
@@ -85,6 +112,7 @@ public class RepositoryUserServiceTest {
                 .passwordVerification(PASSWORD)
                 .build();
 
+        when(repositoryMock.findByEmail(EMAIL)).thenReturn(null);
         when(passwordEncoderMock.encode(PASSWORD)).thenReturn(ENCODED_PASSWORD);
 
         when(repositoryMock.save(isA(User.class))).thenAnswer(new Answer<User>() {
@@ -105,10 +133,36 @@ public class RepositoryUserServiceTest {
                 .isRegisteredUser()
                 .isRegisteredByUsingNormalRegistration();
 
+        verify(repositoryMock, times(1)).findByEmail(EMAIL);
+
         verify(passwordEncoderMock, times(1)).encode(PASSWORD);
         verifyNoMoreInteractions(passwordEncoderMock);
 
         verify(repositoryMock, times(1)).save(registered);
         verifyNoMoreInteractions(repositoryMock);
+    }
+
+    @Test
+    public void registerNewUserAccount_ViaNormalSignInAndDuplicateEmailIsFound_ShouldThrowException() throws DuplicateEmailException {
+        RegistrationForm registration = new RegistrationFormBuilder()
+                .email(EMAIL)
+                .firstName(FIRST_NAME)
+                .lastName(LAST_NAME)
+                .password(PASSWORD)
+                .passwordVerification(PASSWORD)
+                .build();
+
+        when(repositoryMock.findByEmail(EMAIL)).thenReturn(new User());
+
+        catchException(service).registerNewUserAccount(registration);
+
+        Assertions.assertThat(caughtException())
+                .isExactlyInstanceOf(DuplicateEmailException.class)
+                .hasMessage("The email address: " + EMAIL + " is already in use.")
+                .hasNoCause();
+
+        verify(repositoryMock, times(1)).findByEmail(EMAIL);
+        verifyNoMoreInteractions(repositoryMock);
+        verifyZeroInteractions(passwordEncoderMock);
     }
 }

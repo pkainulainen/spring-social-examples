@@ -4,6 +4,7 @@ import net.petrikainulainen.spring.social.signinmvc.TestUtil;
 import net.petrikainulainen.spring.social.signinmvc.config.UnitTestContext;
 import net.petrikainulainen.spring.social.signinmvc.config.WebAppContext;
 import net.petrikainulainen.spring.social.signinmvc.user.model.SocialMediaService;
+import net.petrikainulainen.spring.social.signinmvc.user.service.DuplicateEmailException;
 import org.springframework.social.connect.web.ProviderSignInAttemptStub;
 import org.springframework.social.connect.support.TestConnection;
 import org.springframework.social.connect.support.TestConnectionBuilder;
@@ -169,7 +170,14 @@ public class RegistrationControllerTest {
                         hasProperty("passwordVerification", isEmptyOrNullString()),
                         hasProperty("signInProvider", isEmptyOrNullString())
                 )))
-                .andExpect(model().attributeHasFieldErrors("user", "email", "firstName", "lastName", "password", "passwordVerification"));
+                .andExpect(model().attributeHasFieldErrors(
+                        "user",
+                        "email",
+                        "firstName",
+                        "lastName",
+                        "password",
+                        "passwordVerification"
+                ));
 
         verifyZeroInteractions(userServiceMock);
     }
@@ -239,6 +247,41 @@ public class RegistrationControllerTest {
 
         verifyZeroInteractions(userServiceMock);
     }
+
+    @Test
+    public void registerUserAccount_NormalRegistrationAndEmailExists_ShouldRenderRegistrationFormWithFieldError() throws Exception {
+        RegistrationForm userAccountData = new RegistrationFormBuilder()
+                .email(EMAIL)
+                .firstName(FIRST_NAME)
+                .lastName(LAST_NAME)
+                .password(PASSWORD)
+                .passwordVerification(PASSWORD)
+                .build();
+
+        when(userServiceMock.registerNewUserAccount(userAccountData)).thenThrow(new DuplicateEmailException(""));
+
+        mockMvc.perform(post("/user/register")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .content(TestUtil.convertObjectToFormUrlEncodedBytes(userAccountData))
+                .sessionAttr("user", userAccountData)
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/registrationForm"))
+                .andExpect(forwardedUrl("/WEB-INF/jsp/user/registrationForm.jsp"))
+                .andExpect(model().attribute("user", allOf(
+                        hasProperty("email", is(EMAIL)),
+                        hasProperty("firstName", is(FIRST_NAME)),
+                        hasProperty("lastName", is(LAST_NAME)),
+                        hasProperty("password", is(PASSWORD)),
+                        hasProperty("passwordVerification", is(PASSWORD)),
+                        hasProperty("signInProvider", isEmptyOrNullString())
+                )))
+                .andExpect(model().attributeHasFieldErrors("user", "email"));
+
+        verify(userServiceMock, times(1)).registerNewUserAccount(userAccountData);
+        verifyNoMoreInteractions(userServiceMock);
+    }
+
 
     @Test
     public void registerUserAccount_NormalRegistration_ShouldCreateNewUserAccountAndRenderHomePage() throws Exception {
@@ -341,8 +384,6 @@ public class RegistrationControllerTest {
                 .email(email)
                 .firstName(firstName)
                 .lastName(lastName)
-                .password(PASSWORD)
-                .passwordVerification(PASSWORD)
                 .signInProvider(SIGN_IN_PROVIDER)
                 .build();
 
@@ -359,14 +400,64 @@ public class RegistrationControllerTest {
                         hasProperty("email", is(email)),
                         hasProperty("firstName", is(firstName)),
                         hasProperty("lastName", is(lastName)),
-                        hasProperty("password", is(PASSWORD)),
-                        hasProperty("passwordVerification", is(PASSWORD)),
+                        hasProperty("password", isEmptyOrNullString()),
+                        hasProperty("passwordVerification", isEmptyOrNullString()),
                         hasProperty("signInProvider", is(SIGN_IN_PROVIDER))
                 )))
                 .andExpect(model().attributeHasFieldErrors("user", "email", "firstName", "lastName"));
 
         assertThatSignIn(socialSignIn).createdNoConnections();
         verifyZeroInteractions(userServiceMock);
+    }
+
+    @Test
+    public void registerUserAccount_SocialSignInAndEmailExist_ShouldRenderRegistrationFormWithFieldErrror() throws Exception {
+        UserProfile socialUser = new UserProfileBuilder()
+                .setEmail(EMAIL)
+                .setFirstName(FIRST_NAME)
+                .setLastName(LAST_NAME)
+                .setName(FIRST_NAME + " " + LAST_NAME)
+                .build();
+
+        TestConnection socialConnection = new TestConnectionBuilder()
+                .providerId(SOCIAL_MEDIA_SERVICE)
+                .userProfile(socialUser)
+                .build();
+
+        ProviderSignInAttemptStub socialSignIn = new ProviderSignInAttemptStub(socialConnection);
+
+        RegistrationForm userAccountData = new RegistrationFormBuilder()
+                .email(EMAIL)
+                .firstName(FIRST_NAME)
+                .lastName(LAST_NAME)
+                .signInProvider(SIGN_IN_PROVIDER)
+                .build();
+
+        when(userServiceMock.registerNewUserAccount(userAccountData)).thenThrow(new DuplicateEmailException(""));
+
+        mockMvc.perform(post("/user/register")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .content(TestUtil.convertObjectToFormUrlEncodedBytes(userAccountData))
+                .sessionAttr(ProviderSignInAttempt.SESSION_ATTRIBUTE, socialSignIn)
+                .sessionAttr("user", userAccountData)
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/registrationForm"))
+                .andExpect(forwardedUrl("/WEB-INF/jsp/user/registrationForm.jsp"))
+                .andExpect(model().attribute("user", allOf(
+                        hasProperty("email", is(EMAIL)),
+                        hasProperty("firstName", is(FIRST_NAME)),
+                        hasProperty("lastName", is(LAST_NAME)),
+                        hasProperty("password", isEmptyOrNullString()),
+                        hasProperty("passwordVerification", isEmptyOrNullString()),
+                        hasProperty("signInProvider", is(SIGN_IN_PROVIDER))
+                )))
+                .andExpect(model().attributeHasFieldErrors("user", "email"));
+
+        assertThatSignIn(socialSignIn).createdNoConnections();
+
+        verify(userServiceMock, times(1)).registerNewUserAccount(userAccountData);
+        verifyNoMoreInteractions(userServiceMock);
     }
 
     @Test
@@ -389,8 +480,6 @@ public class RegistrationControllerTest {
                 .email(EMAIL)
                 .firstName(FIRST_NAME)
                 .lastName(LAST_NAME)
-                .password(PASSWORD)
-                .passwordVerification(PASSWORD)
                 .signInProvider(SIGN_IN_PROVIDER)
                 .build();
 

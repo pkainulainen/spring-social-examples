@@ -30,10 +30,17 @@ public class RepositoryUserService implements UserService {
 
     @Transactional
     @Override
-    public User registerNewUserAccount(RegistrationForm userAccountData) {
+    public User registerNewUserAccount(RegistrationForm userAccountData) throws DuplicateEmailException {
         LOGGER.debug("Registering new user account with information: {}", userAccountData);
 
-       String encodedPassword = encodePassword(userAccountData);
+        if (emailExist(userAccountData.getEmail())) {
+            LOGGER.debug("Email: {} exists. Throwing exception.", userAccountData.getEmail());
+            throw new DuplicateEmailException("The email address: " + userAccountData.getEmail() + " is already in use.");
+        }
+
+        LOGGER.debug("Email: {} does not exist. Continuing registration.", userAccountData.getEmail());
+
+        String encodedPassword = encodePassword(userAccountData);
 
         User.Builder user = User.getBuilder()
                 .email(userAccountData.getEmail())
@@ -41,15 +48,30 @@ public class RepositoryUserService implements UserService {
                 .lastName(userAccountData.getLastName())
                 .password(encodedPassword);
 
-                if (userAccountData.isSocialSignIn()) {
-                    user.signInProvider(userAccountData.getSignInProvider());
-                }
+        if (userAccountData.isSocialSignIn()) {
+            user.signInProvider(userAccountData.getSignInProvider());
+        }
 
         User registered = user.build();
 
         LOGGER.debug("Persisting new user with information: {}", registered);
 
         return repository.save(registered);
+    }
+
+    private boolean emailExist(String email) {
+        LOGGER.debug("Checking if email {} is already found from the database.", email);
+
+        User user = repository.findByEmail(email);
+
+        if (user != null) {
+            LOGGER.debug("User account: {} found with email: {}. Returning true.", user, email);
+            return true;
+        }
+
+        LOGGER.debug("No user account found with email: {}. Returning false.", email);
+
+        return false;
     }
 
     private String encodePassword(RegistrationForm dto) {

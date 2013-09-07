@@ -22,6 +22,8 @@ import javax.validation.constraints.Size;
 )
 public class RegistrationForm {
 
+    public static final String FIELD_NAME_EMAIL = "email";
+
     @NotEmpty
     @Size(max = 100)
     private String email;

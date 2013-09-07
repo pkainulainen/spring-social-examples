@@ -4,6 +4,7 @@ import net.petrikainulainen.spring.social.signinmvc.security.util.SecurityUtil;
 import net.petrikainulainen.spring.social.signinmvc.user.dto.RegistrationForm;
 import net.petrikainulainen.spring.social.signinmvc.user.model.SocialMediaService;
 import net.petrikainulainen.spring.social.signinmvc.user.model.User;
+import net.petrikainulainen.spring.social.signinmvc.user.service.DuplicateEmailException;
 import net.petrikainulainen.spring.social.signinmvc.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import org.springframework.social.connect.web.ProviderSignInUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -32,6 +34,7 @@ public class RegistrationController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RegistrationController.class);
 
+    protected static final String ERROR_CODE_EMAIL_EXIST = "NotExist.user.email";
     protected static final String MODEL_NAME_REGISTRATION_DTO = "user";
     protected static final String VIEW_NAME_REGISTRATION_PAGE = "user/registrationForm";
 
@@ -88,7 +91,7 @@ public class RegistrationController {
     @RequestMapping(value ="/user/register", method = RequestMethod.POST)
     public String registerUserAccount(@Valid @ModelAttribute("user") RegistrationForm userAccountData,
                                       BindingResult result,
-                                      WebRequest request) {
+                                      WebRequest request) throws DuplicateEmailException {
         LOGGER.debug("Registering user account with information: {}", userAccountData);
         if (result.hasErrors()) {
             LOGGER.debug("Validation errors found. Rendering form view.");
@@ -97,7 +100,14 @@ public class RegistrationController {
 
         LOGGER.debug("No validation errors found. Continuing registration process.");
 
-        User registered = service.registerNewUserAccount(userAccountData);
+        User registered = createUserAccount(userAccountData, result);
+
+        //If email address was already found from the database, render the form view.
+        if (registered == null) {
+            LOGGER.debug("An email address was found from the database. Rendering form view.");
+            return VIEW_NAME_REGISTRATION_PAGE;
+        }
+
         LOGGER.debug("Registered user account with information: {}", registered);
 
         //Logs the user in.
@@ -109,5 +119,50 @@ public class RegistrationController {
         ProviderSignInUtils.handlePostSignUp(registered.getEmail(), request);
 
         return "redirect:/";
+    }
+
+    /**
+     * Creates a new user account by calling the service method. If the email address is found
+     * from the database, this method adds a field error to the email field of the form object.
+     */
+    private User createUserAccount(RegistrationForm userAccountData, BindingResult result) {
+        LOGGER.debug("Creating user account with information: {}", userAccountData);
+        User registered = null;
+
+        try {
+            registered = service.registerNewUserAccount(userAccountData);
+        }
+        catch (DuplicateEmailException ex) {
+            LOGGER.debug("An email address: {} exists.", userAccountData.getEmail());
+            addFieldError(
+                    MODEL_NAME_REGISTRATION_DTO,
+                    RegistrationForm.FIELD_NAME_EMAIL,
+                    userAccountData.getEmail(),
+                    ERROR_CODE_EMAIL_EXIST,
+                    result);
+        }
+
+        return registered;
+    }
+
+    private void addFieldError(String objectName, String fieldName, String fieldValue,  String errorCode, BindingResult result) {
+        LOGGER.debug(
+                "Adding field error object's: {} field: {} with error code: {}",
+                objectName,
+                fieldName,
+                errorCode
+        );
+        FieldError error = new FieldError(
+                objectName,
+                fieldName,
+                fieldValue,
+                false,
+                new String[]{errorCode},
+                new Object[]{},
+                errorCode
+        );
+
+        result.addError(error);
+        LOGGER.debug("Added field error: {} to binding result: {}", error, result);
     }
 }
