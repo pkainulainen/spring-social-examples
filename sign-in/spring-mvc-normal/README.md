@@ -43,16 +43,16 @@ You can configure the application by following these steps:
 
 1.  Configure the database connection. The database connection is configured in the file *profiles/dev/config.properties*.
 
-    db.driver=com.mysql.jdbc.Driver
-    db.url=jdbc:mysql://localhost:3306/socialtwitter
-    db.username=socialtwitter
-    db.password=password
+        db.driver=com.mysql.jdbc.Driver
+        db.url=jdbc:mysql://localhost:3306/socialtwitter
+        db.username=socialtwitter
+        db.password=password
 
 2.  Configure the Twitter application. You can configure your twitter application by creating a file
     *profiles/dev/socialConfig.properties*. The contents of this file looks as follows:
 
-    twitter.consumer.key=foo
-    twitter.consumer.secret=bar
+        twitter.consumer.key=foo
+        twitter.consumer.secret=bar
 
 Initializing the database
 ---------------------------
@@ -73,4 +73,4 @@ Running Tests
 
 1.  You can run unit tests by using this command at the command prompt:
 
-    mvn test -P dev
+        mvn test -P dev
