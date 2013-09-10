@@ -7,6 +7,7 @@ import org.springframework.social.config.annotation.EnableJdbcConnectionReposito
 import org.springframework.social.connect.ConnectionFactoryLocator;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.connect.web.ConnectController;
+import org.springframework.social.facebook.config.annotation.EnableFacebook;
 import org.springframework.social.twitter.config.annotation.EnableTwitter;
 
 /**
@@ -14,6 +15,7 @@ import org.springframework.social.twitter.config.annotation.EnableTwitter;
  */
 @Configuration
 @EnableJdbcConnectionRepository
+@EnableFacebook(appId = "${facebook.app.id}", appSecret = "${facebook.app.secret}")
 @EnableTwitter(appId = "${twitter.consumer.key}", appSecret = "${twitter.consumer.secret}")
 @Profile("application")
 public class SocialContext {

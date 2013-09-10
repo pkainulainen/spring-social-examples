@@ -48,8 +48,14 @@ You can configure the application by following these steps:
         db.username=socialtwitter
         db.password=password
 
-2.  Configure the Twitter application. You can configure your twitter application by creating a file
-    *profiles/dev/socialConfig.properties*. The contents of this file looks as follows:
+2.  Configure the Facebook application. You can configure your Facebook application by creating a file
+    *profiles/dev/socialConfig.properties*. The content of this file looks as follows:
+
+        facebook.app.id=foo
+        facebook.app.secret=bar
+
+3.  Configure the Twitter application. You can configure your twitter application by adding the following
+    configuration to the file *profiles/dev/socialConfig.properties*:
 
         twitter.consumer.key=foo
         twitter.consumer.secret=bar

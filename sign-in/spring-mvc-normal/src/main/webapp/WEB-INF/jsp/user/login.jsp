@@ -6,6 +6,8 @@
 <html>
 <head>
     <title></title>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/social-buttons-3.css"/>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/font-awesome.css"/>
 </head>
 <body>
 <div class="page-header">
@@ -43,7 +45,16 @@
     <div class="panel panel-default">
         <div class="panel-body">
             <h2><spring:message code="label.social.sign.in.title"/></h2>
-            <a href="<c:url value="/auth/twitter"/>"><img src="${pageContext.request.contextPath}/static/images/sign-in-with-twitter-gray.png"/></a>
+            <div class="row social-button-row">
+                <div class="col-lg-4">
+                    <a href="<c:url value="/auth/facebook"/>"><button class="btn btn-facebook"><i class="icon-facebook"></i> | Sign in with Facebook</button></a>
+                </div>
+            </div>
+            <div class="row social-button-row">
+                <div class="col-lg-4">
+                    <a href="<c:url value="/auth/twitter"/>"><button class="btn btn-twitter"><i class="icon-twitter"></i> | Sign in with Twitter</button></a>
+                </div>
+            </div>
         </div>
     </div>
 </sec:authorize>
