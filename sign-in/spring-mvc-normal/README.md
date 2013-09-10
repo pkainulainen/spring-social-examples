@@ -17,12 +17,18 @@ This example application has the following software prerequisites:
 * JDK 7
 * Maven 3
 * MySQL 5.6.X
+* Twitter application (Enable the "allow this application to be used to Sign in with Twitter" checkbox)
+* Facebook application (Select "website with Facebook login" when you are asked how your application integrates with FB)
 
-You also have to create a Twitter application which is used to sign in the user by using Twitter. You can get
-more information about this from these website:
+You create the required applications by following these links:
 
-* [Implementing Sign in with Twitter](https://dev.twitter.com/docs/auth/implementing-sign-twitter).
-* [Browser sign in flow](https://dev.twitter.com/docs/browser-sign-flow).
+* [Facebook Developers](https://developers.facebook.com/)
+* [Twitter Developers](https://dev.twitter.com/)
+
+If you don't know how to create these applications, read the following tutorials:
+
+* [Facebook Developers - Creating an app details page](https://developers.facebook.com/docs/guides/appcenter/#creating)
+* [How to Create a Twitter App in 8 Easy Steps](http://iag.me/socialmedia/how-to-create-a-twitter-app-in-8-easy-steps/)
 
 Running The Example Application
 ================================
