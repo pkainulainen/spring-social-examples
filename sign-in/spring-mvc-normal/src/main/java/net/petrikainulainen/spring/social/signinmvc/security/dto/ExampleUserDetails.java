@@ -1,6 +1,7 @@
 package net.petrikainulainen.spring.social.signinmvc.security.dto;
 
 import net.petrikainulainen.spring.social.signinmvc.user.model.Role;
+import net.petrikainulainen.spring.social.signinmvc.user.model.SocialMediaService;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,6 +23,8 @@ public class ExampleUserDetails extends SocialUser {
     private String lastName;
 
     private Role role;
+
+    private SocialMediaService socialSignInProvider;
 
     public ExampleUserDetails(String username, String password, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
@@ -47,6 +50,10 @@ public class ExampleUserDetails extends SocialUser {
         return role;
     }
 
+    public SocialMediaService getSocialSignInProvider() {
+        return socialSignInProvider;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this)
@@ -55,6 +62,7 @@ public class ExampleUserDetails extends SocialUser {
                 .append("firstName", firstName)
                 .append("lastName", lastName)
                 .append("role", role)
+                .append("socialSignInProvider", socialSignInProvider)
                 .toString();
     }
 
@@ -71,6 +79,8 @@ public class ExampleUserDetails extends SocialUser {
         private String password;
 
         private Role role;
+
+        private SocialMediaService socialSignInProvider;
 
         private Set<GrantedAuthority> authorities;
 
@@ -111,6 +121,11 @@ public class ExampleUserDetails extends SocialUser {
             return this;
         }
 
+        public Builder socialSignInProvider(SocialMediaService socialSignInProvider) {
+            this.socialSignInProvider = socialSignInProvider;
+            return this;
+        }
+
         public Builder username(String username) {
             this.username = username;
             return this;
@@ -123,6 +138,7 @@ public class ExampleUserDetails extends SocialUser {
             user.firstName = firstName;
             user.lastName = lastName;
             user.role = role;
+            user.socialSignInProvider = socialSignInProvider;
 
             return user;
         }

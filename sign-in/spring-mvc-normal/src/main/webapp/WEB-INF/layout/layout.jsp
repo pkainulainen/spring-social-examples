@@ -8,6 +8,7 @@
     <title><spring:message code="spring.social.mvc.normal.title"/></title>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/bootstrap.css"/>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/bootstrap-theme.css"/>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/font-awesome.css"/>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/style.css"/>
     <script type="text/javascript" src="${pageContext.request.contextPath}/static/js/vendor/jquery-2.0.3.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/static/js/vendor/bootstrap.js"></script>
@@ -17,6 +18,12 @@
 <div class="page">
     <div class="navbar navbar-default" role="navigation">
         <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only"><spring:message code="label.navigation.toggle.navigation.button"/></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
             <span class="navbar-brand">Spring Social Example</span>
         </div>
         <div class="collapse navbar-collapse navbar-ex1-collapse">
@@ -40,6 +47,21 @@
                     </li>
                 </sec:authorize>
             </ul>
+            <sec:authorize access="isAuthenticated()">
+                <p class="nav navbar-nav navbar-right navbar-text sign-in-text">
+                    <sec:authentication property="principal.socialSignInProvider" var="signInProvider"/>
+                    <c:if test="${signInProvider == 'FACEBOOK'}">
+                        <i class="icon-facebook-sign"></i>
+                    </c:if>
+                    <c:if test="${signInProvider == 'TWITTER'}">
+                        <i class="icon-twitter-sign"></i>
+                    </c:if>
+                    <c:if test="${empty signInProvider}">
+                        <spring:message code="label.navigation.signed.in.as.text"/>
+                    </c:if>
+                    <sec:authentication property="principal.username"/>
+                </p>
+            </sec:authorize>
         </div><!-- /.navbar-collapse -->
     </div>
     <div class="content">

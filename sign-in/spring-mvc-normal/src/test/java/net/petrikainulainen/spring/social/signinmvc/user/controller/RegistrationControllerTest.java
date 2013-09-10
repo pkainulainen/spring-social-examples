@@ -312,7 +312,7 @@ public class RegistrationControllerTest {
                 .andExpect(status().isMovedTemporarily())
                 .andExpect(redirectedUrl("/"));
 
-        assertThat(SecurityContextHolder.getContext()).loggedInUserIs(registered);
+        assertThat(SecurityContextHolder.getContext()).loggedInUserIsSignedInByUsingSocialProvider(registered);
 
         verify(userServiceMock, times(1)).registerNewUserAccount(userAccountData);
         verifyNoMoreInteractions(userServiceMock);
@@ -504,7 +504,7 @@ public class RegistrationControllerTest {
                 .andExpect(status().isMovedTemporarily())
                 .andExpect(redirectedUrl("/"));
 
-        assertThat(SecurityContextHolder.getContext()).loggedInUserIs(registered);
+        assertThat(SecurityContextHolder.getContext()).loggedInUserIsSignedInByUsingSocialProvider(registered);
         assertThatSignIn(socialSignIn).createdConnectionForUserId(EMAIL);
 
         verify(userServiceMock, times(1)).registerNewUserAccount(userAccountData);

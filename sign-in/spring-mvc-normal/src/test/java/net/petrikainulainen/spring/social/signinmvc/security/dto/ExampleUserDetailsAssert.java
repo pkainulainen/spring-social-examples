@@ -1,6 +1,7 @@
 package net.petrikainulainen.spring.social.signinmvc.security.dto;
 
 import net.petrikainulainen.spring.social.signinmvc.user.model.Role;
+import net.petrikainulainen.spring.social.signinmvc.user.model.SocialMediaService;
 import org.fest.assertions.Assertions;
 import org.fest.assertions.GenericAssert;
 import org.springframework.security.core.GrantedAuthority;
@@ -159,6 +160,37 @@ public class ExampleUserDetailsAssert extends GenericAssert<ExampleUserDetailsAs
         Assertions.assertThat(authority.getAuthority())
                 .overridingErrorMessage(authorityErrorMessage)
                 .isEqualTo(Role.ROLE_USER.name());
+
+        return this;
+    }
+
+    public ExampleUserDetailsAssert isRegisteredByUsingFormRegistration() {
+        isNotNull();
+
+        String errorMessage = String.format(
+                "Expected socialSignInProvider to be <null> but was <%s>",
+                actual.getSocialSignInProvider()
+        );
+
+        Assertions.assertThat(actual.getSocialSignInProvider())
+                .overridingErrorMessage(errorMessage)
+                .isNull();
+
+        return this;
+    }
+
+    public ExampleUserDetailsAssert isSignedInByUsingSocialSignInProvider(SocialMediaService socialSignInProvider) {
+        isNotNull();
+
+        String errorMessage = String.format(
+                "Expected socialSignInProvider to be <%s> but was <%s>",
+                socialSignInProvider,
+                actual.getSocialSignInProvider()
+        );
+
+        Assertions.assertThat(actual.getSocialSignInProvider())
+                .overridingErrorMessage(errorMessage)
+                .isEqualTo(socialSignInProvider);
 
         return this;
     }

@@ -3,6 +3,7 @@ package net.petrikainulainen.spring.social.signinmvc.security.util;
 import net.petrikainulainen.spring.social.signinmvc.security.dto.ExampleUserDetails;
 import net.petrikainulainen.spring.social.signinmvc.security.dto.ExampleUserDetailsAssert;
 import net.petrikainulainen.spring.social.signinmvc.security.dto.ExampleUserDetailsAssert;
+import net.petrikainulainen.spring.social.signinmvc.user.model.SocialMediaService;
 import net.petrikainulainen.spring.social.signinmvc.user.model.User;
 import org.fest.assertions.Assertions;
 import org.fest.assertions.GenericAssert;
@@ -21,7 +22,7 @@ public class SecurityContextAssert extends GenericAssert<SecurityContextAssert, 
         return new SecurityContextAssert(actual);
     }
 
-    public SecurityContextAssert loggedInUserIs(User user) {
+    public SecurityContextAssert loggedInUserIsRegisteredByUsingRegistrationForm(User user) {
         isNotNull();
 
         ExampleUserDetails loggedIn = (ExampleUserDetails) actual.getAuthentication().getPrincipal();
@@ -38,7 +39,30 @@ public class SecurityContextAssert extends GenericAssert<SecurityContextAssert, 
                 .hasPassword(user.getPassword())
                 .hasUsername(user.getEmail())
                 .isActive()
-                .isRegisteredUser();
+                .isRegisteredUser()
+                .isRegisteredByUsingFormRegistration();
+
+        return this;
+    }
+
+    public SecurityContextAssert loggedInUserIsSignedInByUsingSocialProvider(User user) {
+        isNotNull();
+
+        ExampleUserDetails loggedIn = (ExampleUserDetails) actual.getAuthentication().getPrincipal();
+
+        String errorMessage = String.format("Expected logged in user to be <%s> but was <null>", user);
+        Assertions.assertThat(loggedIn)
+                .overridingErrorMessage(errorMessage)
+                .isNotNull();
+
+        ExampleUserDetailsAssert.assertThat(loggedIn)
+                .hasFirstName(user.getFirstName())
+                .hasId(user.getId())
+                .hasLastName(user.getLastName())
+                .hasUsername(user.getEmail())
+                .isActive()
+                .isRegisteredUser()
+                .isSignedInByUsingSocialSignInProvider(user.getSignInProvider());
 
         return this;
     }

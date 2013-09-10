@@ -8,10 +8,10 @@
 </head>
 <body>
 <div class="page-header">
-    <h1><spring:message code="label.homepage.title"/></h1>
+    <h1><spring:message code="label.homepage.title"/> <sec:authentication property="principal.firstName"/> <sec:authentication property="principal.lastName"/></h1>
 </div>
 <div>
-    <p><spring:message code="text.homepage.greeting"/> <sec:authentication property="principal.username"/></p>
+    <p><spring:message code="text.homepage.greeting"/></p>
 </div>
 </body>
 </html>

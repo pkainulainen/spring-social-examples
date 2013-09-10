@@ -1,6 +1,7 @@
 package net.petrikainulainen.spring.social.signinmvc.security.service;
 
 import net.petrikainulainen.spring.social.signinmvc.security.dto.ExampleUserDetails;
+import net.petrikainulainen.spring.social.signinmvc.user.model.SocialMediaService;
 import net.petrikainulainen.spring.social.signinmvc.user.model.User;
 import net.petrikainulainen.spring.social.signinmvc.user.model.UserBuilder;
 import net.petrikainulainen.spring.social.signinmvc.user.repository.UserRepository;
@@ -58,7 +59,7 @@ public class RepositoryUserDetailsServiceTest {
     }
 
     @Test
-    public void loadByUsername_UserFound_ShouldReturnCorrectUserDetails() {
+    public void loadByUsername_UserRegisteredByUsingFormRegistration_ShouldReturnCorrectUserDetails() {
         User found = new UserBuilder()
                 .email(EMAIL)
                 .firstName(FIRST_NAME)
@@ -79,7 +80,36 @@ public class RepositoryUserDetailsServiceTest {
                 .hasPassword(PASSWORD)
                 .hasUsername(EMAIL)
                 .isActive()
-                .isRegisteredUser();
+                .isRegisteredUser()
+                .isRegisteredByUsingFormRegistration();
+
+        verify(repositoryMock, times(1)).findByEmail(EMAIL);
+        verifyNoMoreInteractions(repositoryMock);
+    }
+
+    @Test
+    public void loadByUsername_UserSignedInByUsingSocialSignInProvider_ShouldReturnCorrectUserDetails() {
+        User found = new UserBuilder()
+                .email(EMAIL)
+                .firstName(FIRST_NAME)
+                .id(ID)
+                .lastName(LAST_NAME)
+                .signInProvider(SocialMediaService.TWITTER)
+                .build();
+
+        when(repositoryMock.findByEmail(EMAIL)).thenReturn(found);
+
+        UserDetails user = service.loadUserByUsername(EMAIL);
+        ExampleUserDetails actual = (ExampleUserDetails) user;
+
+        assertThat(actual)
+                .hasFirstName(FIRST_NAME)
+                .hasId(ID)
+                .hasLastName(LAST_NAME)
+                .hasUsername(EMAIL)
+                .isActive()
+                .isRegisteredUser()
+                .isSignedInByUsingSocialSignInProvider(SocialMediaService.TWITTER);
 
         verify(repositoryMock, times(1)).findByEmail(EMAIL);
         verifyNoMoreInteractions(repositoryMock);

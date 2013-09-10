@@ -24,6 +24,7 @@ public class SecurityUtil {
                 .lastName(user.getLastName())
                 .password(user.getPassword())
                 .role(user.getRole())
+                .socialSignInProvider(user.getSignInProvider())
                 .username(user.getEmail())
                 .build();
         LOGGER.debug("Logging in principal: {}", userDetails);

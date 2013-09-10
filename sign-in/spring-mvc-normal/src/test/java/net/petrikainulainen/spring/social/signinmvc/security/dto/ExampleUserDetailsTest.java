@@ -1,6 +1,7 @@
 package net.petrikainulainen.spring.social.signinmvc.security.dto;
 
 import net.petrikainulainen.spring.social.signinmvc.user.model.Role;
+import net.petrikainulainen.spring.social.signinmvc.user.model.SocialMediaService;
 import org.junit.Test;
 
 import static net.petrikainulainen.spring.social.signinmvc.security.dto.ExampleUserDetailsAssert.assertThat;
@@ -18,7 +19,7 @@ public class ExampleUserDetailsTest {
     private static final String SOCIAL_USER_DUMMY_PASSWORD = "SocialUser";
 
     @Test
-    public void build_ShouldCreateNewObjectAndSetAllValues() {
+    public void build_UserRegisteredByUsingFormRegistration_ShouldCreateNewObject() {
         ExampleUserDetails user = ExampleUserDetails.getBuilder()
                 .firstName(FIRST_NAME)
                 .id(ID)
@@ -34,17 +35,19 @@ public class ExampleUserDetailsTest {
                 .hasPassword(PASSWORD)
                 .hasUsername(EMAIL)
                 .isActive()
-                .isRegisteredUser();
+                .isRegisteredUser()
+                .isRegisteredByUsingFormRegistration();
     }
 
     @Test
-    public void build_WithNullPassword_ShouldCreateNewObjectAndSetDummyPassword() {
+    public void build_UserUsingSocialSignIn_ShouldCreateNewObject() {
         ExampleUserDetails user = ExampleUserDetails.getBuilder()
                 .firstName(FIRST_NAME)
                 .id(ID)
                 .lastName(LAST_NAME)
                 .password(null)
                 .role(Role.ROLE_USER)
+                .socialSignInProvider(SocialMediaService.TWITTER)
                 .username(EMAIL)
                 .build();
 
@@ -55,6 +58,7 @@ public class ExampleUserDetailsTest {
                 .hasPassword(SOCIAL_USER_DUMMY_PASSWORD)
                 .hasUsername(EMAIL)
                 .isActive()
-                .isRegisteredUser();
+                .isRegisteredUser()
+                .isSignedInByUsingSocialSignInProvider(SocialMediaService.TWITTER);
     }
 }
