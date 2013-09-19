@@ -18,8 +18,12 @@ public class RepositoryUserDetailsService implements UserDetailsService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryUserDetailsService.class);
 
-    @Autowired
     private UserRepository repository;
+
+    @Autowired
+    public RepositoryUserDetailsService(UserRepository repository) {
+        this.repository = repository;
+    }
 
     /**
      * Loads the user information.

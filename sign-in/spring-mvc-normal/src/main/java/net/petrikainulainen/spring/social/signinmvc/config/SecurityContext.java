@@ -2,6 +2,7 @@ package net.petrikainulainen.spring.social.signinmvc.config;
 
 import net.petrikainulainen.spring.social.signinmvc.security.service.RepositoryUserDetailsService;
 import net.petrikainulainen.spring.social.signinmvc.security.service.SimpleSocialUserDetailsService;
+import net.petrikainulainen.spring.social.signinmvc.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -34,6 +35,9 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private ApplicationContext context;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -120,7 +124,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
      */
     @Bean
     public UserDetailsService userDetailsService() {
-        return new RepositoryUserDetailsService();
+        return new RepositoryUserDetailsService(userRepository);
     }
 
     /**

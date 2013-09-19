@@ -92,7 +92,7 @@
     <bean id="textEncryptor" class="org.springframework.security.crypto.encrypt.Encryptors" factory-method="noOpText" />
 
     <!-- This bean is load the user specific data when form login is used. -->
-    <bean id="userDetailsService" class="net.petrikainulainen.spring.social.signinmvc.security.service.RepositoryUserDetailsService"/>
+    <bean id="userDetailsService" class="net.petrikainulainen.spring.social.signinmvc.security.service.RepositoryUserDetailsService" autowire="constructor"/>
 
     <!--
         This bean determines the account ID of the user. The example application

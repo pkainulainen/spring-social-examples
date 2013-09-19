@@ -40,8 +40,7 @@ public class RepositoryUserDetailsServiceTest {
 
     @Before
     public void setUp() {
-        service = new RepositoryUserDetailsService();
-        ReflectionTestUtils.setField(service, "repository", repositoryMock);
+        service = new RepositoryUserDetailsService(repositoryMock);
     }
 
     @Test
