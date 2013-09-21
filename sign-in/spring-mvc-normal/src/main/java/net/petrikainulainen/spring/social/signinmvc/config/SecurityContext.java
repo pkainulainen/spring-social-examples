@@ -27,9 +27,6 @@ import org.springframework.social.security.SpringSocialConfigurer;
  * @author Petri Kainulainen
  */
 @Configuration
-@ComponentScan(basePackages = {
-        "net.petrikainulainen.spring.social.signinmvc.security.service"
-})
 @EnableWebSecurity
 public class SecurityContext extends WebSecurityConfigurerAdapter {
 
