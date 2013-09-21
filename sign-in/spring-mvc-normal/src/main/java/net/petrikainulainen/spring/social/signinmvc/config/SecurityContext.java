@@ -90,7 +90,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     * This is used to encrypt the password of the user.
+     * This is used to hash the password of the user.
      */
     @Bean
     public PasswordEncoder passwordEncoder() {

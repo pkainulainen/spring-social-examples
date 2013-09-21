@@ -48,7 +48,7 @@
         <security:authentication-provider ref="socialAuthenticationProvider"/>
     </security:authentication-manager>
 
-    <!-- This is used to encrypt the password of the user. -->
+    <!-- This is used to hash the password of the user. -->
     <bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
         <constructor-arg index="0" value="10"/>
     </bean>
