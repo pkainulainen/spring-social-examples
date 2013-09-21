@@ -362,11 +362,6 @@
             <artifactId>spring-social-facebook</artifactId>
             <version>${spring.social.facebook.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.social</groupId>
-            <artifactId>spring-social-facebook-web</artifactId>
-            <version>${spring.social.facebook.version}</version>
-        </dependency>
         <!-- Spring Social Twitter -->
         <dependency>
             <groupId>org.springframework.social</groupId>
