@@ -10,6 +10,8 @@
     <security:http pattern="/static/**" security="none" />
 
     <security:http use-expressions="true">
+        <!-- Enables Spring Security CSRF protection -->
+        <security:csrf/>
         <!-- Configures the form login -->
         <security:form-login
                 login-page="/login"
