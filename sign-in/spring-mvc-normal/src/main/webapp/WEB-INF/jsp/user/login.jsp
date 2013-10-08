@@ -37,8 +37,17 @@
                         <input id="user-password" name="password" type="password" class="form-control"/>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-default"><spring:message code="label.user.login.submit.button"/></button>
+                <div class="row">
+                    <div class="form-group col-lg-4">
+                        <button type="submit" class="btn btn-default"><spring:message code="label.user.login.submit.button"/></button>
+                    </div>
+                </div>
             </form>
+            <div class="row">
+                <div class="form-group col-lg-4">
+                    <a href="/user/register"><spring:message code="label.navigation.registration.link"/></a>
+                </div>
+            </div>
         </div>
     </div>
     <div class="panel panel-default">
