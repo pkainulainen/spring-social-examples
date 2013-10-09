@@ -4,6 +4,7 @@ import net.petrikainulainen.spring.social.signinmvc.user.model.SocialMediaServic
 import net.petrikainulainen.spring.social.signinmvc.user.validation.PasswordsNotEmpty;
 import net.petrikainulainen.spring.social.signinmvc.user.validation.PasswordsNotEqual;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Size;
@@ -24,6 +25,7 @@ public class RegistrationForm {
 
     public static final String FIELD_NAME_EMAIL = "email";
 
+    @Email
     @NotEmpty
     @Size(max = 100)
     private String email;

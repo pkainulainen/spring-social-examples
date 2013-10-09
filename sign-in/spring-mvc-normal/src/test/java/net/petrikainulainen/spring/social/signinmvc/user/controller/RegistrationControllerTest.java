@@ -51,6 +51,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class RegistrationControllerTest {
 
     private static final String EMAIL = "john.smith@gmail.com";
+    private static final String MALFORMED_EMAIL = "john.smithatgmail.com";
     private static final String FIRST_NAME = "John";
     private static final String LAST_NAME = "Smith";
     private static final String PASSWORD = "password";
@@ -283,6 +284,36 @@ public class RegistrationControllerTest {
         verifyNoMoreInteractions(userServiceMock);
     }
 
+    @Test
+    public void registerUserAccount_NormalRegistrationAndMalformedEmail_ShouldRenderRegistrationFormWithValidationError() throws Exception {
+        RegistrationForm userAccountData = new RegistrationFormBuilder()
+                .email(MALFORMED_EMAIL)
+                .firstName(FIRST_NAME)
+                .lastName(LAST_NAME)
+                .password(PASSWORD)
+                .passwordVerification(PASSWORD)
+                .build();
+
+        mockMvc.perform(post("/user/register")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .content(TestUtil.convertObjectToFormUrlEncodedBytes(userAccountData))
+                .sessionAttr("user", userAccountData)
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/registrationForm"))
+                .andExpect(forwardedUrl("/WEB-INF/jsp/user/registrationForm.jsp"))
+                .andExpect(model().attribute("user", allOf(
+                        hasProperty("email", is(MALFORMED_EMAIL)),
+                        hasProperty("firstName", is(FIRST_NAME)),
+                        hasProperty("lastName", is(LAST_NAME)),
+                        hasProperty("password", is(PASSWORD)),
+                        hasProperty("passwordVerification", is(PASSWORD)),
+                        hasProperty("signInProvider", isEmptyOrNullString())
+                )))
+                .andExpect(model().attributeHasFieldErrors("user", "email"));
+
+        verifyZeroInteractions(userServiceMock);
+    }
 
     @Test
     public void registerUserAccount_NormalRegistration_ShouldCreateNewUserAccountAndRenderHomePage() throws Exception {
@@ -406,6 +437,52 @@ public class RegistrationControllerTest {
                         hasProperty("signInProvider", is(SIGN_IN_PROVIDER))
                 )))
                 .andExpect(model().attributeHasFieldErrors("user", "email", "firstName", "lastName"));
+
+        assertThatSignIn(socialSignIn).createdNoConnections();
+        verifyZeroInteractions(userServiceMock);
+    }
+
+    @Test
+    public void registerUserAccount_SocialSignInAndMalformedEmail_ShouldRenderRegistrationFormWithValidationError() throws Exception {
+        UserProfile socialUser = new UserProfileBuilder()
+                .setEmail(EMAIL)
+                .setFirstName(FIRST_NAME)
+                .setLastName(LAST_NAME)
+                .setName(FIRST_NAME + " " + LAST_NAME)
+                .build();
+
+        TestConnection socialConnection = new TestConnectionBuilder()
+                .providerId(SOCIAL_MEDIA_SERVICE)
+                .userProfile(socialUser)
+                .build();
+
+        ProviderSignInAttemptStub socialSignIn = new ProviderSignInAttemptStub(socialConnection);
+
+        RegistrationForm userAccountData = new RegistrationFormBuilder()
+                .email(MALFORMED_EMAIL)
+                .firstName(FIRST_NAME)
+                .lastName(LAST_NAME)
+                .signInProvider(SIGN_IN_PROVIDER)
+                .build();
+
+        mockMvc.perform(post("/user/register")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .content(TestUtil.convertObjectToFormUrlEncodedBytes(userAccountData))
+                .sessionAttr(ProviderSignInAttempt.SESSION_ATTRIBUTE, socialSignIn)
+                .sessionAttr("user", userAccountData)
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/registrationForm"))
+                .andExpect(forwardedUrl("/WEB-INF/jsp/user/registrationForm.jsp"))
+                .andExpect(model().attribute("user", allOf(
+                        hasProperty("email", is(MALFORMED_EMAIL)),
+                        hasProperty("firstName", is(FIRST_NAME)),
+                        hasProperty("lastName", is(LAST_NAME)),
+                        hasProperty("password", isEmptyOrNullString()),
+                        hasProperty("passwordVerification", isEmptyOrNullString()),
+                        hasProperty("signInProvider", is(SIGN_IN_PROVIDER))
+                )))
+                .andExpect(model().attributeHasFieldErrors("user", "email"));
 
         assertThatSignIn(socialSignIn).createdNoConnections();
         verifyZeroInteractions(userServiceMock);
