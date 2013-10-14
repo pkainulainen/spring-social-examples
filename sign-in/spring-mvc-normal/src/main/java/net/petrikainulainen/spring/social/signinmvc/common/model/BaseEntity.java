@@ -13,11 +13,11 @@ public abstract class BaseEntity<ID> {
 
     @Column(name = "creation_time", nullable = false)
     @Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
-    private org.joda.time.DateTime creationTime;
+    private DateTime creationTime;
 
     @Column(name = "modification_time", nullable = false)
     @Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
-    private org.joda.time.DateTime modificationTime;
+    private DateTime modificationTime;
 
     @Version
     private long version;

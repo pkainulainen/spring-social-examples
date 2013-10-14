@@ -24,7 +24,7 @@ public class PasswordsNotEmptyValidator implements ConstraintValidator<Passwords
     public boolean isValid(Object value, ConstraintValidatorContext context) {
         context.disableDefaultConstraintViolation();
         try {
-            Object validationTrigger = getFieldValue(value, validationTriggerFieldName);
+            Object validationTrigger = ValidatorUtil.getFieldValue(value, validationTriggerFieldName);
             if (validationTrigger == null) {
                 return passWordFieldsAreValid(value, context);
             }
@@ -39,34 +39,22 @@ public class PasswordsNotEmptyValidator implements ConstraintValidator<Passwords
     private boolean passWordFieldsAreValid(Object value, ConstraintValidatorContext context) throws NoSuchFieldException, IllegalAccessException {
         boolean passwordWordFieldsAreValid = true;
 
-        String password = (String) getFieldValue(value, passwordFieldName);
+        String password = (String) ValidatorUtil.getFieldValue(value, passwordFieldName);
         if (isNullOrEmpty(password)) {
-            addValidationError(passwordFieldName, context);
+            ValidatorUtil.addValidationError(passwordFieldName, context);
             passwordWordFieldsAreValid = false;
         }
 
-        String passwordVerification = (String) getFieldValue(value, passwordVerificationFieldName);
+        String passwordVerification = (String) ValidatorUtil.getFieldValue(value, passwordVerificationFieldName);
         if (isNullOrEmpty(passwordVerification)) {
-            addValidationError(passwordVerificationFieldName, context);
+            ValidatorUtil.addValidationError(passwordVerificationFieldName, context);
             passwordWordFieldsAreValid = false;
         }
 
         return passwordWordFieldsAreValid;
     }
 
-    private Object getFieldValue(Object object, String fieldName) throws NoSuchFieldException, IllegalAccessException {
-        Field f = object.getClass().getDeclaredField(fieldName);
-        f.setAccessible(true);
-        return f.get(object);
-    }
-
     private boolean isNullOrEmpty(String field) {
         return field == null || field.trim().isEmpty();
-    }
-
-    private void addValidationError(String field, ConstraintValidatorContext context) {
-        context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
-                .addNode(field)
-                .addConstraintViolation();
     }
 }

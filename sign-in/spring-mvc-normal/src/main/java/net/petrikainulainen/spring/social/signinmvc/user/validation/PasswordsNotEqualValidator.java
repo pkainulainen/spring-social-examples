@@ -23,12 +23,12 @@ public class PasswordsNotEqualValidator implements ConstraintValidator<Passwords
     public boolean isValid(Object value, ConstraintValidatorContext context) {
         context.disableDefaultConstraintViolation();
         try {
-            String password = (String) getFieldValue(value, passwordFieldName);
-            String passwordVerification = (String) getFieldValue(value, passwordVerificationFieldName);
+            String password = (String) ValidatorUtil.getFieldValue(value, passwordFieldName);
+            String passwordVerification = (String) ValidatorUtil.getFieldValue(value, passwordVerificationFieldName);
 
             if (passwordsAreNotEqual(password, passwordVerification)) {
-                addValidationError(passwordFieldName, context);
-                addValidationError(passwordVerificationFieldName, context);
+                ValidatorUtil.addValidationError(passwordFieldName, context);
+                ValidatorUtil.addValidationError(passwordVerificationFieldName, context);
 
                 return false;
             }
@@ -40,19 +40,7 @@ public class PasswordsNotEqualValidator implements ConstraintValidator<Passwords
         return true;
     }
 
-    private Object getFieldValue(Object object, String fieldName) throws NoSuchFieldException, IllegalAccessException {
-        Field f = object.getClass().getDeclaredField(fieldName);
-        f.setAccessible(true);
-        return f.get(object);
-    }
-
     private boolean passwordsAreNotEqual(String password, String passwordVerification) {
         return !(password == null ? passwordVerification == null : password.equals(passwordVerification));
-    }
-
-    private void addValidationError(String field, ConstraintValidatorContext context) {
-        context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
-                .addNode(field)
-                .addConstraintViolation();
     }
 }
