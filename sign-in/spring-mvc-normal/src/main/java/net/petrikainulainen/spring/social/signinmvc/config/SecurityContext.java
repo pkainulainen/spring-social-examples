@@ -14,11 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.encrypt.Encryptors;
-import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.social.UserIdSource;
-import org.springframework.social.security.AuthenticationNameUserIdSource;
 import org.springframework.social.security.SocialUserDetailsService;
 import org.springframework.social.security.SpringSocialConfigurer;
 
@@ -106,29 +102,10 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     * This bean encrypts the authorization details of the connection. In
-     * our example, the authorization details are stored as plain text.
-     * DO NOT USE THIS IN PRODUCTION.
-     */
-    @Bean
-    public TextEncryptor textEncryptor() {
-        return Encryptors.noOpText();
-    }
-
-    /**
      * This bean is load the user specific data when form login is used.
      */
     @Bean
     public UserDetailsService userDetailsService() {
         return new RepositoryUserDetailsService(userRepository);
-    }
-
-    /**
-     * This bean determines the account ID of the user. The example application
-     * uses the username as the account ID.
-     */
-    @Bean
-    public UserIdSource userIdSource() {
-        return new AuthenticationNameUserIdSource();
     }
 }

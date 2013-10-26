@@ -2,7 +2,6 @@ package net.petrikainulainen.spring.social.signinmvc.user.validation;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.lang.reflect.Field;
 
 /**
  * @author Petri Kainulainen

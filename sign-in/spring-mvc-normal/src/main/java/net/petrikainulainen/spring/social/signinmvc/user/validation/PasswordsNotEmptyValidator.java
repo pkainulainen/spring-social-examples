@@ -2,7 +2,6 @@ package net.petrikainulainen.spring.social.signinmvc.user.validation;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.lang.reflect.Field;
 
 /**
  * @author Petri Kainulainen
@@ -26,7 +25,7 @@ public class PasswordsNotEmptyValidator implements ConstraintValidator<Passwords
         try {
             Object validationTrigger = ValidatorUtil.getFieldValue(value, validationTriggerFieldName);
             if (validationTrigger == null) {
-                return passWordFieldsAreValid(value, context);
+                return passwordFieldsAreValid(value, context);
             }
         }
         catch (Exception ex) {
@@ -36,7 +35,7 @@ public class PasswordsNotEmptyValidator implements ConstraintValidator<Passwords
         return true;
     }
 
-    private boolean passWordFieldsAreValid(Object value, ConstraintValidatorContext context) throws NoSuchFieldException, IllegalAccessException {
+    private boolean passwordFieldsAreValid(Object value, ConstraintValidatorContext context) throws NoSuchFieldException, IllegalAccessException {
         boolean passwordWordFieldsAreValid = true;
 
         String password = (String) ValidatorUtil.getFieldValue(value, passwordFieldName);

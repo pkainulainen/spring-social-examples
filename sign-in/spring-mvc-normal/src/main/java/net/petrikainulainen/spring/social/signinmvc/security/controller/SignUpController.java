@@ -22,8 +22,8 @@ public class SignUpController {
      * @return
      */
     @RequestMapping(value = "/signup", method = RequestMethod.GET)
-    public String redirectRequestToRegisterPage() {
-        LOGGER.debug("Redirecting request to register page.");
+    public String redirectRequestToRegistrationPage() {
+        LOGGER.debug("Redirecting request to registration page.");
 
         return "redirect:/user/register";
     }
