@@ -66,7 +66,7 @@
     </profiles>
 
     <build>
-        <finalName>spring-social-twitter-mvc</finalName>
+        <finalName>spring-social-normal-mvc</finalName>
         <filters>
             <filter>profiles/${build.profile.id}/config.properties</filter>
             <filter>profiles/${build.profile.id}/socialConfig.properties</filter>
