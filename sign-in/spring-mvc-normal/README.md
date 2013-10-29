@@ -2,7 +2,13 @@ Introduction
 ==============
 
 This is an example application of my blog entries that describe how you can integration Spring Social and
-Spring Security. This example application uses
+Spring Security. These blog posts are:
+
+* [Adding Social Sign In to a Spring MVC Web Application: Configuration](http://www.petrikainulainen.net/programming/spring-framework/adding-social-sign-in-to-a-spring-mvc-web-application-configuration/)
+* [Adding Social Sign In to a Spring MVC Web Application: Registration and Login](http://www.petrikainulainen.net/programming/spring-framework/adding-social-sign-in-to-a-spring-mvc-web-application-registration-and-login/)
+
+
+This example application uses
 
 * Spring Framework 3.2.X
 * Spring Social 1.1.0
