@@ -2,7 +2,6 @@ package org.springframework.social.connect.support;
 
 import org.springframework.social.connect.ConnectionData;
 import org.springframework.social.connect.UserProfile;
-import org.springframework.social.connect.support.AbstractConnection;
 
 /**
  * @author Petri Kainulainen

@@ -1,7 +1,6 @@
 package org.springframework.social.connect.web;
 
 import org.springframework.social.connect.Connection;
-import org.springframework.social.connect.web.ProviderSignInAttempt;
 
 import java.util.HashSet;
 import java.util.Set;

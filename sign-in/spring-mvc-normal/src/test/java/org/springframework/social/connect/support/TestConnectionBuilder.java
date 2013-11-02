@@ -9,9 +9,13 @@ import org.springframework.social.connect.UserProfileBuilder;
  */
 public class TestConnectionBuilder {
 
+    private String accessToken;
+
     private String displayName;
 
     private String email;
+
+    private Long expireTime;
 
     private String firstName;
 
@@ -25,10 +29,19 @@ public class TestConnectionBuilder {
 
     private String providerUserId;
 
+    private String refreshToken;
+
+    private String secret;
+
     private UserProfileBuilder userProfileBuilder;
 
     public TestConnectionBuilder() {
 
+    }
+
+    public TestConnectionBuilder accessToken(String accessToken) {
+        this.accessToken = accessToken;
+        return this;
     }
 
     public TestConnectionBuilder displayName(String displayName) {
@@ -38,6 +51,11 @@ public class TestConnectionBuilder {
 
     public TestConnectionBuilder email(String email) {
         this.email = email;
+        return this;
+    }
+
+    public TestConnectionBuilder expireTime(Long expireTime) {
+        this.expireTime = expireTime;
         return this;
     }
 
@@ -71,6 +89,16 @@ public class TestConnectionBuilder {
         return this;
     }
 
+    public TestConnectionBuilder refreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+        return this;
+    }
+
+    public TestConnectionBuilder secret(String secret) {
+        this.secret = secret;
+        return this;
+    }
+
     public TestConnectionBuilder userProfile() {
         userProfileBuilder = new UserProfileBuilder();
         return this;
@@ -82,12 +110,12 @@ public class TestConnectionBuilder {
                 displayName,
                 profileUrl,
                 imageUrl,
-                null,
-                null,
-                null,
-                null);
+                accessToken,
+                secret,
+                refreshToken,
+                expireTime);
 
-        UserProfile userProfile = new UserProfileBuilder()
+        UserProfile userProfile = userProfileBuilder
                 .setEmail(email)
                 .setFirstName(firstName)
                 .setLastName(lastName)
