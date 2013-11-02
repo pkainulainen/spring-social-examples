@@ -2,6 +2,7 @@ package org.springframework.social.connect.support;
 
 import org.springframework.social.connect.ConnectionData;
 import org.springframework.social.connect.UserProfile;
+import org.springframework.social.connect.UserProfileBuilder;
 
 /**
  * @author Petri Kainulainen
@@ -10,7 +11,13 @@ public class TestConnectionBuilder {
 
     private String displayName;
 
+    private String email;
+
+    private String firstName;
+
     private String imageUrl;
+
+    private String lastName;
 
     private String profileUrl;
 
@@ -18,7 +25,7 @@ public class TestConnectionBuilder {
 
     private String providerUserId;
 
-    private UserProfile userProfile;
+    private UserProfileBuilder userProfileBuilder;
 
     public TestConnectionBuilder() {
 
@@ -29,8 +36,23 @@ public class TestConnectionBuilder {
         return this;
     }
 
+    public TestConnectionBuilder email(String email) {
+        this.email = email;
+        return this;
+    }
+
+    public TestConnectionBuilder firstName(String firstName) {
+        this.firstName = firstName;
+        return this;
+    }
+
     public TestConnectionBuilder imageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+        return this;
+    }
+
+    public TestConnectionBuilder lastName(String lastName) {
+        this.lastName = lastName;
         return this;
     }
 
@@ -49,8 +71,8 @@ public class TestConnectionBuilder {
         return this;
     }
 
-    public TestConnectionBuilder userProfile(UserProfile userProfile) {
-        this.userProfile = userProfile;
+    public TestConnectionBuilder userProfile() {
+        userProfileBuilder = new UserProfileBuilder();
         return this;
     }
 
@@ -64,6 +86,13 @@ public class TestConnectionBuilder {
                 null,
                 null,
                 null);
+
+        UserProfile userProfile = new UserProfileBuilder()
+                .setEmail(email)
+                .setFirstName(firstName)
+                .setLastName(lastName)
+                .build();
+
         return new TestConnection(connectionData, userProfile);
     }
 }
