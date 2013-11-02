@@ -12,12 +12,11 @@ public class ProviderSignInAttemptStub extends ProviderSignInAttempt {
 
     private Connection<?> connection;
 
-    private Set<String> connections;
+    private Set<String> connections = new HashSet<>();
 
     public ProviderSignInAttemptStub(Connection<?> connection) {
         super(connection, null, null);
         this.connection = connection;
-        this.connections = new HashSet<>();
     }
 
     @Override
