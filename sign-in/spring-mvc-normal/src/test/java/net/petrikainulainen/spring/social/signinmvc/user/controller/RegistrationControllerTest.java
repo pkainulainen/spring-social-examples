@@ -95,16 +95,12 @@ public class RegistrationControllerTest {
 
     @Test
     public void showRegistrationForm_SocialSignUpWithAllValues_ShouldRenderRegistrationPageWithAllValuesSet() throws Exception {
-        UserProfile socialUser = new UserProfileBuilder()
-                .setEmail(EMAIL)
-                .setFirstName(FIRST_NAME)
-                .setLastName(LAST_NAME)
-                .setName(FIRST_NAME + " " + LAST_NAME)
-                .build();
-
         TestConnection socialConnection = new TestConnectionBuilder()
                 .providerId(SOCIAL_MEDIA_SERVICE)
-                .userProfile(socialUser)
+                .userProfile()
+                    .email(EMAIL)
+                    .firstName(FIRST_NAME)
+                    .lastName(LAST_NAME)
                 .build();
 
         ProviderSignInAttempt socialSignIn = new ProviderSignInAttemptStub(socialConnection);
@@ -127,11 +123,9 @@ public class RegistrationControllerTest {
 
     @Test
     public void showRegistrationForm_SocialSignUpWithNoValues_ShouldRenderRegistrationPageWithProviderDetails() throws Exception {
-        UserProfile socialUser = new UserProfileBuilder().build();
-
         TestConnection socialConnection = new TestConnectionBuilder()
                 .providerId(SOCIAL_MEDIA_SERVICE)
-                .userProfile(socialUser)
+                .userProfile()
                 .build();
 
         ProviderSignInAttempt socialSignIn = new ProviderSignInAttemptStub(socialConnection);
@@ -343,7 +337,7 @@ public class RegistrationControllerTest {
                 .andExpect(status().isMovedTemporarily())
                 .andExpect(redirectedUrl("/"));
 
-        assertThat(SecurityContextHolder.getContext()).loggedInUserIsSignedInByUsingSocialProvider(registered);
+        assertThat(SecurityContextHolder.getContext()).loggedInUserIsRegisteredByUsingRegistrationForm(registered);
 
         verify(userServiceMock, times(1)).registerNewUserAccount(userAccountData);
         verifyNoMoreInteractions(userServiceMock);
@@ -351,16 +345,12 @@ public class RegistrationControllerTest {
 
     @Test
     public void registerUserAccount_SignUpViaSocialProviderAndEmptyForm_ShouldRenderRegistrationFormWithValidationErrors() throws Exception {
-        UserProfile socialUser = new UserProfileBuilder()
-                .setEmail(EMAIL)
-                .setFirstName(FIRST_NAME)
-                .setLastName(LAST_NAME)
-                .setName(FIRST_NAME + " " + LAST_NAME)
-                .build();
-
         TestConnection socialConnection = new TestConnectionBuilder()
                 .providerId(SOCIAL_MEDIA_SERVICE)
-                .userProfile(socialUser)
+                .userProfile()
+                    .email(EMAIL)
+                    .firstName(FIRST_NAME)
+                    .lastName(LAST_NAME)
                 .build();
 
         ProviderSignInAttemptStub socialSignIn = new ProviderSignInAttemptStub(socialConnection);
@@ -394,16 +384,12 @@ public class RegistrationControllerTest {
 
     @Test
     public void registerUserAccount_SocialSignInAndTooLongValues_ShouldRenderRegistrationFormWithValidationErrors() throws Exception {
-        UserProfile socialUser = new UserProfileBuilder()
-                .setEmail(EMAIL)
-                .setFirstName(FIRST_NAME)
-                .setLastName(LAST_NAME)
-                .setName(FIRST_NAME + " " + LAST_NAME)
-                .build();
-
         TestConnection socialConnection = new TestConnectionBuilder()
                 .providerId(SOCIAL_MEDIA_SERVICE)
-                .userProfile(socialUser)
+                .userProfile()
+                    .email(EMAIL)
+                    .firstName(FIRST_NAME)
+                    .lastName(LAST_NAME)
                 .build();
 
         ProviderSignInAttemptStub socialSignIn = new ProviderSignInAttemptStub(socialConnection);
@@ -444,16 +430,12 @@ public class RegistrationControllerTest {
 
     @Test
     public void registerUserAccount_SocialSignInAndMalformedEmail_ShouldRenderRegistrationFormWithValidationError() throws Exception {
-        UserProfile socialUser = new UserProfileBuilder()
-                .setEmail(EMAIL)
-                .setFirstName(FIRST_NAME)
-                .setLastName(LAST_NAME)
-                .setName(FIRST_NAME + " " + LAST_NAME)
-                .build();
-
         TestConnection socialConnection = new TestConnectionBuilder()
                 .providerId(SOCIAL_MEDIA_SERVICE)
-                .userProfile(socialUser)
+                .userProfile()
+                    .email(EMAIL)
+                    .firstName(FIRST_NAME)
+                    .lastName(LAST_NAME)
                 .build();
 
         ProviderSignInAttemptStub socialSignIn = new ProviderSignInAttemptStub(socialConnection);
@@ -489,17 +471,13 @@ public class RegistrationControllerTest {
     }
 
     @Test
-    public void registerUserAccount_SocialSignInAndEmailExist_ShouldRenderRegistrationFormWithFieldErrror() throws Exception {
-        UserProfile socialUser = new UserProfileBuilder()
-                .setEmail(EMAIL)
-                .setFirstName(FIRST_NAME)
-                .setLastName(LAST_NAME)
-                .setName(FIRST_NAME + " " + LAST_NAME)
-                .build();
-
+    public void registerUserAccount_SocialSignInAndEmailExist_ShouldRenderRegistrationFormWithFieldError() throws Exception {
         TestConnection socialConnection = new TestConnectionBuilder()
                 .providerId(SOCIAL_MEDIA_SERVICE)
-                .userProfile(socialUser)
+                .userProfile()
+                    .email(EMAIL)
+                    .firstName(FIRST_NAME)
+                    .lastName(LAST_NAME)
                 .build();
 
         ProviderSignInAttemptStub socialSignIn = new ProviderSignInAttemptStub(socialConnection);
@@ -540,16 +518,12 @@ public class RegistrationControllerTest {
 
     @Test
     public void registerUserAccount_SocialSignIn_ShouldCreateNewUserAccountAndRenderHomePage() throws Exception {
-        UserProfile socialUser = new UserProfileBuilder()
-                .setEmail(EMAIL)
-                .setFirstName(FIRST_NAME)
-                .setLastName(LAST_NAME)
-                .setName(FIRST_NAME + " " + LAST_NAME)
-                .build();
-
         TestConnection socialConnection = new TestConnectionBuilder()
                 .providerId(SOCIAL_MEDIA_SERVICE)
-                .userProfile(socialUser)
+                .userProfile()
+                    .email(EMAIL)
+                    .firstName(FIRST_NAME)
+                    .lastName(LAST_NAME)
                 .build();
 
         ProviderSignInAttemptStub socialSignIn = new ProviderSignInAttemptStub(socialConnection);
