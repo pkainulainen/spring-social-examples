@@ -20,8 +20,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.social.connect.UserProfile;
-import org.springframework.social.connect.UserProfileBuilder;
 import org.springframework.social.connect.web.ProviderSignInAttempt;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -337,7 +335,10 @@ public class RegistrationControllerTest {
                 .andExpect(status().isMovedTemporarily())
                 .andExpect(redirectedUrl("/"));
 
-        assertThat(SecurityContextHolder.getContext()).loggedInUserIsRegisteredByUsingRegistrationForm(registered);
+        assertThat(SecurityContextHolder.getContext())
+                .loggedInUserIs(registered)
+                .loggedInUserHasPassword(registered.getPassword())
+                .loggedInUserIsRegisteredByUsingNormalRegistration();
 
         verify(userServiceMock, times(1)).registerNewUserAccount(userAccountData);
         verifyNoMoreInteractions(userServiceMock);
@@ -540,7 +541,6 @@ public class RegistrationControllerTest {
                 .email(EMAIL)
                 .firstName(FIRST_NAME)
                 .lastName(LAST_NAME)
-                .password(PASSWORD)
                 .signInProvider(SIGN_IN_PROVIDER)
                 .build();
 
@@ -555,7 +555,9 @@ public class RegistrationControllerTest {
                 .andExpect(status().isMovedTemporarily())
                 .andExpect(redirectedUrl("/"));
 
-        assertThat(SecurityContextHolder.getContext()).loggedInUserIsSignedInByUsingSocialProvider(registered);
+        assertThat(SecurityContextHolder.getContext())
+                .loggedInUserIs(registered)
+                .loggedInUserIsSignedInByUsingSocialProvider(SIGN_IN_PROVIDER);
         assertThatSignIn(socialSignIn).createdConnectionForUserId(EMAIL);
 
         verify(userServiceMock, times(1)).registerNewUserAccount(userAccountData);

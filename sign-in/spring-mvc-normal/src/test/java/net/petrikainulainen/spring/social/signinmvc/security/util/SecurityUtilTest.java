@@ -32,7 +32,9 @@ public class SecurityUtilTest {
         SecurityUtil.logInUser(user);
 
         assertThat(SecurityContextHolder.getContext())
-                .loggedInUserIsRegisteredByUsingRegistrationForm(user);
+                .loggedInUserIs(user)
+                .loggedInUserHasPassword(PASSWORD)
+                .loggedInUserIsRegisteredByUsingNormalRegistration();
     }
 
     @Test
@@ -48,6 +50,7 @@ public class SecurityUtilTest {
         SecurityUtil.logInUser(user);
 
         assertThat(SecurityContextHolder.getContext())
-                .loggedInUserIsSignedInByUsingSocialProvider(user);
+                .loggedInUserIs(user)
+                .loggedInUserIsSignedInByUsingSocialProvider(SocialMediaService.TWITTER);
     }
 }
