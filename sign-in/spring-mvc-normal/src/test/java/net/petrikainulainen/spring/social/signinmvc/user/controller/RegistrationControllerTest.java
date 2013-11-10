@@ -5,9 +5,8 @@ import net.petrikainulainen.spring.social.signinmvc.config.UnitTestContext;
 import net.petrikainulainen.spring.social.signinmvc.config.WebAppContext;
 import net.petrikainulainen.spring.social.signinmvc.user.model.SocialMediaService;
 import net.petrikainulainen.spring.social.signinmvc.user.service.DuplicateEmailException;
-import org.springframework.social.connect.web.ProviderSignInAttemptStub;
-import org.springframework.social.connect.support.TestConnection;
-import org.springframework.social.connect.support.TestConnectionBuilder;
+import org.springframework.social.connect.support.TestProviderSignInAttemptBuilder;
+import org.springframework.social.connect.web.TestProviderSignInAttempt;
 import net.petrikainulainen.spring.social.signinmvc.user.dto.RegistrationForm;
 import net.petrikainulainen.spring.social.signinmvc.user.dto.RegistrationFormBuilder;
 import net.petrikainulainen.spring.social.signinmvc.user.model.User;
@@ -29,7 +28,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import static net.petrikainulainen.spring.social.signinmvc.security.util.SecurityContextAssert.assertThat;
-import static net.petrikainulainen.spring.social.signinmvc.user.controller.ProviderSignInAttemptStubAssert.assertThatSignIn;
+import static net.petrikainulainen.spring.social.signinmvc.user.controller.TestProviderSignInAttemptAssert.assertThatSignIn;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
@@ -71,6 +70,8 @@ public class RegistrationControllerTest {
 
         mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext)
                 .build();
+
+        SecurityContextHolder.getContext().setAuthentication(null);
     }
 
     @Test
@@ -93,15 +94,14 @@ public class RegistrationControllerTest {
 
     @Test
     public void showRegistrationForm_SocialSignUpWithAllValues_ShouldRenderRegistrationPageWithAllValuesSet() throws Exception {
-        TestConnection socialConnection = new TestConnectionBuilder()
-                .providerId(SOCIAL_MEDIA_SERVICE)
+        TestProviderSignInAttempt socialSignIn = new TestProviderSignInAttemptBuilder()
+                .connectionData()
+                    .providerId(SOCIAL_MEDIA_SERVICE)
                 .userProfile()
                     .email(EMAIL)
                     .firstName(FIRST_NAME)
                     .lastName(LAST_NAME)
                 .build();
-
-        ProviderSignInAttempt socialSignIn = new ProviderSignInAttemptStub(socialConnection);
 
         mockMvc.perform(get("/user/register")
             .sessionAttr(ProviderSignInAttempt.SESSION_ATTRIBUTE, socialSignIn)
@@ -121,12 +121,11 @@ public class RegistrationControllerTest {
 
     @Test
     public void showRegistrationForm_SocialSignUpWithNoValues_ShouldRenderRegistrationPageWithProviderDetails() throws Exception {
-        TestConnection socialConnection = new TestConnectionBuilder()
-                .providerId(SOCIAL_MEDIA_SERVICE)
+        TestProviderSignInAttempt socialSignIn = new TestProviderSignInAttemptBuilder()
+                .connectionData()
+                    .providerId(SOCIAL_MEDIA_SERVICE)
                 .userProfile()
                 .build();
-
-        ProviderSignInAttempt socialSignIn = new ProviderSignInAttemptStub(socialConnection);
 
         mockMvc.perform(get("/user/register")
                 .sessionAttr(ProviderSignInAttempt.SESSION_ATTRIBUTE, socialSignIn)
@@ -173,6 +172,7 @@ public class RegistrationControllerTest {
                         "passwordVerification"
                 ));
 
+        assertThat(SecurityContextHolder.getContext()).userIsAnonymous();
         verifyZeroInteractions(userServiceMock);
     }
 
@@ -208,6 +208,7 @@ public class RegistrationControllerTest {
                 )))
                 .andExpect(model().attributeHasFieldErrors("user", "email", "firstName", "lastName"));
 
+        assertThat(SecurityContextHolder.getContext()).userIsAnonymous();
         verifyZeroInteractions(userServiceMock);
     }
 
@@ -239,6 +240,7 @@ public class RegistrationControllerTest {
                 )))
                 .andExpect(model().attributeHasFieldErrors("user", "password", "passwordVerification"));
 
+        assertThat(SecurityContextHolder.getContext()).userIsAnonymous();
         verifyZeroInteractions(userServiceMock);
     }
 
@@ -272,6 +274,8 @@ public class RegistrationControllerTest {
                 )))
                 .andExpect(model().attributeHasFieldErrors("user", "email"));
 
+        assertThat(SecurityContextHolder.getContext()).userIsAnonymous();
+
         verify(userServiceMock, times(1)).registerNewUserAccount(userAccountData);
         verifyNoMoreInteractions(userServiceMock);
     }
@@ -303,6 +307,8 @@ public class RegistrationControllerTest {
                         hasProperty("signInProvider", isEmptyOrNullString())
                 )))
                 .andExpect(model().attributeHasFieldErrors("user", "email"));
+
+        assertThat(SecurityContextHolder.getContext()).userIsAnonymous();
 
         verifyZeroInteractions(userServiceMock);
     }
@@ -346,15 +352,14 @@ public class RegistrationControllerTest {
 
     @Test
     public void registerUserAccount_SignUpViaSocialProviderAndEmptyForm_ShouldRenderRegistrationFormWithValidationErrors() throws Exception {
-        TestConnection socialConnection = new TestConnectionBuilder()
-                .providerId(SOCIAL_MEDIA_SERVICE)
+        TestProviderSignInAttempt socialSignIn = new TestProviderSignInAttemptBuilder()
+                .connectionData()
+                    .providerId(SOCIAL_MEDIA_SERVICE)
                 .userProfile()
                     .email(EMAIL)
                     .firstName(FIRST_NAME)
                     .lastName(LAST_NAME)
                 .build();
-
-        ProviderSignInAttemptStub socialSignIn = new ProviderSignInAttemptStub(socialConnection);
 
         RegistrationForm userAccountData = new RegistrationFormBuilder()
                 .signInProvider(SIGN_IN_PROVIDER)
@@ -379,21 +384,21 @@ public class RegistrationControllerTest {
                 )))
                 .andExpect(model().attributeHasFieldErrors("user", "email", "firstName", "lastName"));
 
+        assertThat(SecurityContextHolder.getContext()).userIsAnonymous();
         assertThatSignIn(socialSignIn).createdNoConnections();
         verifyZeroInteractions(userServiceMock);
     }
 
     @Test
     public void registerUserAccount_SocialSignInAndTooLongValues_ShouldRenderRegistrationFormWithValidationErrors() throws Exception {
-        TestConnection socialConnection = new TestConnectionBuilder()
-                .providerId(SOCIAL_MEDIA_SERVICE)
+        TestProviderSignInAttempt socialSignIn = new TestProviderSignInAttemptBuilder()
+                .connectionData()
+                    .providerId(SOCIAL_MEDIA_SERVICE)
                 .userProfile()
                     .email(EMAIL)
                     .firstName(FIRST_NAME)
                     .lastName(LAST_NAME)
                 .build();
-
-        ProviderSignInAttemptStub socialSignIn = new ProviderSignInAttemptStub(socialConnection);
 
         String email = TestUtil.createStringWithLength(101);
         String firstName = TestUtil.createStringWithLength(101);
@@ -425,21 +430,21 @@ public class RegistrationControllerTest {
                 )))
                 .andExpect(model().attributeHasFieldErrors("user", "email", "firstName", "lastName"));
 
+        assertThat(SecurityContextHolder.getContext()).userIsAnonymous();
         assertThatSignIn(socialSignIn).createdNoConnections();
         verifyZeroInteractions(userServiceMock);
     }
 
     @Test
     public void registerUserAccount_SocialSignInAndMalformedEmail_ShouldRenderRegistrationFormWithValidationError() throws Exception {
-        TestConnection socialConnection = new TestConnectionBuilder()
-                .providerId(SOCIAL_MEDIA_SERVICE)
+        TestProviderSignInAttempt socialSignIn = new TestProviderSignInAttemptBuilder()
+                .connectionData()
+                    .providerId(SOCIAL_MEDIA_SERVICE)
                 .userProfile()
                     .email(EMAIL)
                     .firstName(FIRST_NAME)
                     .lastName(LAST_NAME)
                 .build();
-
-        ProviderSignInAttemptStub socialSignIn = new ProviderSignInAttemptStub(socialConnection);
 
         RegistrationForm userAccountData = new RegistrationFormBuilder()
                 .email(MALFORMED_EMAIL)
@@ -467,21 +472,21 @@ public class RegistrationControllerTest {
                 )))
                 .andExpect(model().attributeHasFieldErrors("user", "email"));
 
+        assertThat(SecurityContextHolder.getContext()).userIsAnonymous();
         assertThatSignIn(socialSignIn).createdNoConnections();
         verifyZeroInteractions(userServiceMock);
     }
 
     @Test
     public void registerUserAccount_SocialSignInAndEmailExist_ShouldRenderRegistrationFormWithFieldError() throws Exception {
-        TestConnection socialConnection = new TestConnectionBuilder()
-                .providerId(SOCIAL_MEDIA_SERVICE)
+        TestProviderSignInAttempt socialSignIn = new TestProviderSignInAttemptBuilder()
+                .connectionData()
+                    .providerId(SOCIAL_MEDIA_SERVICE)
                 .userProfile()
                     .email(EMAIL)
                     .firstName(FIRST_NAME)
                     .lastName(LAST_NAME)
                 .build();
-
-        ProviderSignInAttemptStub socialSignIn = new ProviderSignInAttemptStub(socialConnection);
 
         RegistrationForm userAccountData = new RegistrationFormBuilder()
                 .email(EMAIL)
@@ -511,6 +516,7 @@ public class RegistrationControllerTest {
                 )))
                 .andExpect(model().attributeHasFieldErrors("user", "email"));
 
+        assertThat(SecurityContextHolder.getContext()).userIsAnonymous();
         assertThatSignIn(socialSignIn).createdNoConnections();
 
         verify(userServiceMock, times(1)).registerNewUserAccount(userAccountData);
@@ -519,15 +525,14 @@ public class RegistrationControllerTest {
 
     @Test
     public void registerUserAccount_SocialSignIn_ShouldCreateNewUserAccountAndRenderHomePage() throws Exception {
-        TestConnection socialConnection = new TestConnectionBuilder()
-                .providerId(SOCIAL_MEDIA_SERVICE)
+        TestProviderSignInAttempt socialSignIn = new TestProviderSignInAttemptBuilder()
+                .connectionData()
+                    .providerId(SOCIAL_MEDIA_SERVICE)
                 .userProfile()
                     .email(EMAIL)
                     .firstName(FIRST_NAME)
                     .lastName(LAST_NAME)
                 .build();
-
-        ProviderSignInAttemptStub socialSignIn = new ProviderSignInAttemptStub(socialConnection);
 
         RegistrationForm userAccountData = new RegistrationFormBuilder()
                 .email(EMAIL)

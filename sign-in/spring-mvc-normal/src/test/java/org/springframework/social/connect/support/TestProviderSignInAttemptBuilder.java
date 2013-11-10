@@ -1,13 +1,15 @@
 package org.springframework.social.connect.support;
 
+import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionData;
 import org.springframework.social.connect.UserProfile;
 import org.springframework.social.connect.UserProfileBuilder;
+import org.springframework.social.connect.web.TestProviderSignInAttempt;
 
 /**
  * @author Petri Kainulainen
  */
-public class TestConnectionBuilder {
+public class TestProviderSignInAttemptBuilder {
 
     private String accessToken;
 
@@ -33,78 +35,79 @@ public class TestConnectionBuilder {
 
     private String secret;
 
-    private UserProfileBuilder userProfileBuilder;
-
-    public TestConnectionBuilder() {
+    public TestProviderSignInAttemptBuilder() {
 
     }
 
-    public TestConnectionBuilder accessToken(String accessToken) {
+    public TestProviderSignInAttemptBuilder accessToken(String accessToken) {
         this.accessToken = accessToken;
         return this;
     }
 
-    public TestConnectionBuilder displayName(String displayName) {
+    public TestProviderSignInAttemptBuilder connectionData() {
+        return this;
+    }
+
+    public TestProviderSignInAttemptBuilder displayName(String displayName) {
         this.displayName = displayName;
         return this;
     }
 
-    public TestConnectionBuilder email(String email) {
+    public TestProviderSignInAttemptBuilder email(String email) {
         this.email = email;
         return this;
     }
 
-    public TestConnectionBuilder expireTime(Long expireTime) {
+    public TestProviderSignInAttemptBuilder expireTime(Long expireTime) {
         this.expireTime = expireTime;
         return this;
     }
 
-    public TestConnectionBuilder firstName(String firstName) {
+    public TestProviderSignInAttemptBuilder firstName(String firstName) {
         this.firstName = firstName;
         return this;
     }
 
-    public TestConnectionBuilder imageUrl(String imageUrl) {
+    public TestProviderSignInAttemptBuilder imageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
         return this;
     }
 
-    public TestConnectionBuilder lastName(String lastName) {
+    public TestProviderSignInAttemptBuilder lastName(String lastName) {
         this.lastName = lastName;
         return this;
     }
 
-    public TestConnectionBuilder profileUrl(String profileUrl) {
+    public TestProviderSignInAttemptBuilder profileUrl(String profileUrl) {
         this.profileUrl = profileUrl;
         return this;
     }
 
-    public TestConnectionBuilder providerId(String providerId) {
+    public TestProviderSignInAttemptBuilder providerId(String providerId) {
         this.providerId = providerId;
         return this;
     }
 
-    public TestConnectionBuilder providerUserId(String providerUserId) {
+    public TestProviderSignInAttemptBuilder providerUserId(String providerUserId) {
         this.providerUserId = providerUserId;
         return this;
     }
 
-    public TestConnectionBuilder refreshToken(String refreshToken) {
+    public TestProviderSignInAttemptBuilder refreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
         return this;
     }
 
-    public TestConnectionBuilder secret(String secret) {
+    public TestProviderSignInAttemptBuilder secret(String secret) {
         this.secret = secret;
         return this;
     }
 
-    public TestConnectionBuilder userProfile() {
-        userProfileBuilder = new UserProfileBuilder();
+    public TestProviderSignInAttemptBuilder userProfile() {
         return this;
     }
 
-    public TestConnection build() {
+    public TestProviderSignInAttempt build() {
         ConnectionData connectionData = new ConnectionData(providerId,
                 providerUserId,
                 displayName,
@@ -115,12 +118,14 @@ public class TestConnectionBuilder {
                 refreshToken,
                 expireTime);
 
-        UserProfile userProfile = userProfileBuilder
+        UserProfile userProfile = new UserProfileBuilder()
                 .setEmail(email)
                 .setFirstName(firstName)
                 .setLastName(lastName)
                 .build();
 
-        return new TestConnection(connectionData, userProfile);
+        Connection connection = new TestConnection(connectionData, userProfile);
+
+        return new TestProviderSignInAttempt(connection);
     }
 }

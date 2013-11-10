@@ -6,6 +6,7 @@ import net.petrikainulainen.spring.social.signinmvc.user.model.SocialMediaServic
 import net.petrikainulainen.spring.social.signinmvc.user.model.User;
 import org.fest.assertions.Assertions;
 import org.fest.assertions.GenericAssert;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 
 /**
@@ -19,6 +20,19 @@ public class SecurityContextAssert extends GenericAssert<SecurityContextAssert, 
 
     public static SecurityContextAssert assertThat(SecurityContext actual) {
         return new SecurityContextAssert(actual);
+    }
+
+    public SecurityContextAssert userIsAnonymous() {
+        isNotNull();
+
+        Authentication authentication = actual.getAuthentication();
+
+        String errorMessage = String.format("Expected authentication to be <null> but was <%s>.", authentication);
+        Assertions.assertThat(authentication)
+                .overridingErrorMessage(errorMessage)
+                .isNull();
+
+        return this;
     }
 
     public SecurityContextAssert loggedInUserIs(User user) {

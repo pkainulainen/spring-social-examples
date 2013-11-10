@@ -532,7 +532,7 @@
         <dependency>
             <groupId>com.googlecode.catch-exception</groupId>
             <artifactId>catch-exception</artifactId>
-            <version>1.0.4</version>
+            <version>1.2.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.mockito</groupId>

@@ -8,13 +8,13 @@ import java.util.Set;
 /**
  * @author Petri Kainulainen
  */
-public class ProviderSignInAttemptStub extends ProviderSignInAttempt {
+public class TestProviderSignInAttempt extends ProviderSignInAttempt {
 
     private Connection<?> connection;
 
     private Set<String> connections = new HashSet<>();
 
-    public ProviderSignInAttemptStub(Connection<?> connection) {
+    public TestProviderSignInAttempt(Connection<?> connection) {
         super(connection, null, null);
         this.connection = connection;
     }

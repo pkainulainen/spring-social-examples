@@ -2,22 +2,22 @@ package net.petrikainulainen.spring.social.signinmvc.user.controller;
 
 import org.fest.assertions.Assertions;
 import org.fest.assertions.GenericAssert;
-import org.springframework.social.connect.web.ProviderSignInAttemptStub;
+import org.springframework.social.connect.web.TestProviderSignInAttempt;
 
 /**
  * @author Petri Kainulainen
  */
-public class ProviderSignInAttemptStubAssert extends GenericAssert<ProviderSignInAttemptStubAssert, ProviderSignInAttemptStub> {
+public class TestProviderSignInAttemptAssert extends GenericAssert<TestProviderSignInAttemptAssert, TestProviderSignInAttempt> {
 
-    public ProviderSignInAttemptStubAssert(ProviderSignInAttemptStub actual) {
-        super(ProviderSignInAttemptStubAssert.class, actual);
+    public TestProviderSignInAttemptAssert(TestProviderSignInAttempt actual) {
+        super(TestProviderSignInAttemptAssert.class, actual);
     }
 
-    public static ProviderSignInAttemptStubAssert assertThatSignIn(ProviderSignInAttemptStub actual) {
-        return new ProviderSignInAttemptStubAssert(actual);
+    public static TestProviderSignInAttemptAssert assertThatSignIn(TestProviderSignInAttempt actual) {
+        return new TestProviderSignInAttemptAssert(actual);
     }
 
-    public ProviderSignInAttemptStubAssert createdNoConnections() {
+    public TestProviderSignInAttemptAssert createdNoConnections() {
         isNotNull();
 
         String error = String.format(
@@ -31,7 +31,7 @@ public class ProviderSignInAttemptStubAssert extends GenericAssert<ProviderSignI
         return this;
     }
 
-    public ProviderSignInAttemptStubAssert createdConnectionForUserId(String userId) {
+    public TestProviderSignInAttemptAssert createdConnectionForUserId(String userId) {
         isNotNull();
 
         String error = String.format(
