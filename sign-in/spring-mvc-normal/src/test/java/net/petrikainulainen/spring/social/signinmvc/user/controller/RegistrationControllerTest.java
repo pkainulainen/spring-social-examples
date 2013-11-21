@@ -93,7 +93,7 @@ public class RegistrationControllerTest {
     }
 
     @Test
-    public void showRegistrationForm_SocialSignUpWithAllValues_ShouldRenderRegistrationPageWithAllValuesSet() throws Exception {
+    public void showRegistrationForm_SocialSignInWithAllValues_ShouldRenderRegistrationPageWithAllValuesSet() throws Exception {
         TestProviderSignInAttempt socialSignIn = new TestProviderSignInAttemptBuilder()
                 .connectionData()
                     .providerId(SOCIAL_MEDIA_SERVICE)
@@ -117,10 +117,12 @@ public class RegistrationControllerTest {
                         hasProperty("passwordVerification", isEmptyOrNullString()),
                         hasProperty("signInProvider", is(SIGN_IN_PROVIDER))
                 )));
+
+        verifyZeroInteractions(userServiceMock);
     }
 
     @Test
-    public void showRegistrationForm_SocialSignUpWithNoValues_ShouldRenderRegistrationPageWithProviderDetails() throws Exception {
+    public void showRegistrationForm_SocialSignInWithNoValues_ShouldRenderRegistrationPageWithProviderDetails() throws Exception {
         TestProviderSignInAttempt socialSignIn = new TestProviderSignInAttemptBuilder()
                 .connectionData()
                     .providerId(SOCIAL_MEDIA_SERVICE)
@@ -141,6 +143,8 @@ public class RegistrationControllerTest {
                         hasProperty("passwordVerification", isEmptyOrNullString()),
                         hasProperty("signInProvider", is(SIGN_IN_PROVIDER))
                 )));
+
+        verifyZeroInteractions(userServiceMock);
     }
 
     @Test
@@ -351,7 +355,7 @@ public class RegistrationControllerTest {
     }
 
     @Test
-    public void registerUserAccount_SignUpViaSocialProviderAndEmptyForm_ShouldRenderRegistrationFormWithValidationErrors() throws Exception {
+    public void registerUserAccount_SocialSignInAndEmptyForm_ShouldRenderRegistrationFormWithValidationErrors() throws Exception {
         TestProviderSignInAttempt socialSignIn = new TestProviderSignInAttemptBuilder()
                 .connectionData()
                     .providerId(SOCIAL_MEDIA_SERVICE)
