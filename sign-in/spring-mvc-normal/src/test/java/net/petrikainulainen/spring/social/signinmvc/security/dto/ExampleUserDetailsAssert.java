@@ -13,7 +13,7 @@ import java.util.Collection;
  */
 public class ExampleUserDetailsAssert extends GenericAssert<ExampleUserDetailsAssert, ExampleUserDetails> {
 
-    public ExampleUserDetailsAssert(ExampleUserDetails actual) {
+    private ExampleUserDetailsAssert(ExampleUserDetails actual) {
         super(ExampleUserDetailsAssert.class, actual);
     }
 

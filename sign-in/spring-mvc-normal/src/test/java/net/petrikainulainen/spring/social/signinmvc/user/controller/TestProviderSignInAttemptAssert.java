@@ -9,7 +9,7 @@ import org.springframework.social.connect.web.TestProviderSignInAttempt;
  */
 public class TestProviderSignInAttemptAssert extends GenericAssert<TestProviderSignInAttemptAssert, TestProviderSignInAttempt> {
 
-    public TestProviderSignInAttemptAssert(TestProviderSignInAttempt actual) {
+    private TestProviderSignInAttemptAssert(TestProviderSignInAttempt actual) {
         super(TestProviderSignInAttemptAssert.class, actual);
     }
 

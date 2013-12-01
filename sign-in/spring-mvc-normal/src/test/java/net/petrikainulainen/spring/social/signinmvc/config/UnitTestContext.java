@@ -1,11 +1,9 @@
 package net.petrikainulainen.spring.social.signinmvc.config;
 
-import net.petrikainulainen.spring.social.signinmvc.user.repository.UserRepository;
 import net.petrikainulainen.spring.social.signinmvc.user.service.UserService;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
 import static org.mockito.Mockito.mock;

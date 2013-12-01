@@ -14,7 +14,7 @@ import org.springframework.security.core.context.SecurityContext;
  */
 public class SecurityContextAssert extends GenericAssert<SecurityContextAssert, SecurityContext> {
 
-    public SecurityContextAssert(SecurityContext actual) {
+    private SecurityContextAssert(SecurityContext actual) {
         super(SecurityContextAssert.class, actual);
     }
 

@@ -8,7 +8,7 @@ import org.fest.assertions.GenericAssert;
  */
 public class UserAssert extends GenericAssert<UserAssert, User> {
 
-    protected UserAssert(User actual) {
+    private UserAssert(User actual) {
         super(UserAssert.class, actual);
     }
 
