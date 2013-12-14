@@ -343,6 +343,11 @@
         <!-- Spring Social -->
         <dependency>
             <groupId>org.springframework.social</groupId>
+            <artifactId>spring-social-config</artifactId>
+            <version>${spring.social.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.social</groupId>
             <artifactId>spring-social-core</artifactId>
             <version>${spring.social.version}</version>
         </dependency>
