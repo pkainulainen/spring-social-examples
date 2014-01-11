@@ -26,9 +26,6 @@ import org.springframework.social.security.SpringSocialConfigurer;
 public class SecurityContext extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private ApplicationContext context;
-
-    @Autowired
     private UserRepository userRepository;
 
     @Override
