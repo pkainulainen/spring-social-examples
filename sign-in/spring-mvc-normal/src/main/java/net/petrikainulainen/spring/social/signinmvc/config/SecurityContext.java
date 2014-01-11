@@ -68,9 +68,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
                         .antMatchers("/**").hasRole("USER")
                 //Adds the SocialAuthenticationFilter to Spring Security's filter chain.
                 .and()
-                    .apply(new SpringSocialConfigurer())
-                .and()
-                    .setSharedObject(ApplicationContext.class, context);
+                    .apply(new SpringSocialConfigurer());
     }
 
     /**
@@ -78,7 +76,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
      * requests.
      */
     @Override
-    protected void registerAuthentication(AuthenticationManagerBuilder auth) throws Exception {
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
                 .userDetailsService(userDetailsService())
                 .passwordEncoder(passwordEncoder());
