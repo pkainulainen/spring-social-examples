@@ -4,7 +4,6 @@ import net.petrikainulainen.spring.social.signinmvc.security.service.RepositoryU
 import net.petrikainulainen.spring.social.signinmvc.security.service.SimpleSocialUserDetailsService;
 import net.petrikainulainen.spring.social.signinmvc.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -15,8 +14,14 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.social.security.SocialUserDetailsService;
 import org.springframework.social.security.SpringSocialConfigurer;
+
+import javax.sql.DataSource;
 
 /**
  * @author Petri Kainulainen
@@ -24,6 +29,9 @@ import org.springframework.social.security.SpringSocialConfigurer;
 @Configuration
 @EnableWebSecurity
 public class SecurityContext extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private DataSource dataSource;
 
     @Autowired
     private UserRepository userRepository;
@@ -47,9 +55,14 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
                 //Configures the logout function
                 .and()
                     .logout()
-                        .deleteCookies("JSESSIONID")
+                        .deleteCookies("JSESSIONID", "SPRING_SECURITY_REMEMBER_ME_COOKIE")
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login")
+                .and()
+                    .rememberMe()
+                        .key("uniqueSecret")
+                        .rememberMeServices(rememberMeServices())
+                        .tokenValiditySeconds(172800)
                 //Configures url based authorization
                 .and()
                     .authorizeRequests()
@@ -85,6 +98,24 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(10);
+    }
+
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+        tokenRepository.setDataSource(dataSource);
+        return tokenRepository;
+    }
+
+    @Bean
+    public RememberMeServices rememberMeServices() {
+        PersistentTokenBasedRememberMeServices rememberMeServices = new PersistentTokenBasedRememberMeServices(
+                "uniqueSecret",
+                userDetailsService(),
+                persistentTokenRepository()
+        );
+        rememberMeServices.setAlwaysRemember(true);
+        return rememberMeServices;
     }
 
     /**
