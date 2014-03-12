@@ -86,7 +86,7 @@ You can run the application by running the following command at the command prom
 
     mvn jetty:run -P dev
 
-If you want to deploy the application to Tomcat, you have to use Tomcat 7 and [specify the active Spring profile](http://maciejwalkowiak.pl/blog/2012/03/27/spring-3-1-profiles-and-tomcat-configuration/).
+If you want to deploy the application to Tomcat, you have to use Tomcat 7 or newer.
 
 Running Tests
 ================
