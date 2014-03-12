@@ -27,11 +27,16 @@
             <name>SpringSource Milestone Repository</name>
             <url>http://repo.springsource.org/libs-milestone</url>
         </repository>
+        <repository>
+            <id>local-repository</id>
+            <name>local repository</name>
+            <url>file://${project.basedir}/etc/mavenrepo</url>
+        </repository>
     </repositories>
 
     <properties>
         <hibernate.version>4.2.4.Final</hibernate.version>
-        <liquibase.version>3.0.2</liquibase.version>
+        <liquibase.version>3.1.1</liquibase.version>
         <mysql.connector.version>5.1.26</mysql.connector.version>
         <slf4j.version>1.7.5</slf4j.version>
         <spring.version>4.0.0.RELEASE</spring.version>
@@ -117,6 +122,9 @@
                                 <resource>
                                     <directory>src/integration-test/resources</directory>
                                 </resource>
+                                <resource>
+                                    <directory>etc/db</directory>
+                                </resource>
                             </resources>
                         </configuration>
                     </execution>
@@ -143,7 +151,6 @@
                 <version>2.16</version>
                 <configuration>
                     <argLine>${failsafeArgLine}</argLine>
-                    <systemPropertiesFile>${project.basedir}/profiles/${build.profile.id}/system.properties</systemPropertiesFile>
                 </configuration>
                 <executions>
                     <!-- States that both integration-test and verify goals of the Failsafe Maven plugin are executed. -->
@@ -254,7 +261,6 @@
                 <configuration>
                     <stopKey>todostop</stopKey>
                     <stopPort>9999</stopPort>
-                    <systemPropertiesFile>${project.basedir}/profiles/${build.profile.id}/system.properties</systemPropertiesFile>
                 </configuration>
             </plugin>
         </plugins>
@@ -549,6 +555,24 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${spring.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.springtestdbunit</groupId>
+            <artifactId>spring-test-dbunit</artifactId>
+            <version>1.1.1-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dbunit</groupId>
+            <artifactId>dbunit</artifactId>
+            <version>2.4.9</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>${liquibase.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

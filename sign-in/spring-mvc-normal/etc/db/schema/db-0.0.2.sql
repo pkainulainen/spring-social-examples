@@ -1,6 +1,6 @@
 BEGIN;
 
-CREATE TABLE `users` (
+CREATE TABLE `user_accounts` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `creation_time` datetime NOT NULL,
   `email` varchar(100) NOT NULL,

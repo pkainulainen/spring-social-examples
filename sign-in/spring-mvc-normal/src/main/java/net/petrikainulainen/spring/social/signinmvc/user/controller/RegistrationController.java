@@ -112,7 +112,7 @@ public class RegistrationController {
 
         //Logs the user in.
         SecurityUtil.logInUser(registered);
-        LOGGER.debug("User {} has been signed in");
+        LOGGER.debug("User {} has been signed in", registered);
         //If the user is signing in by using a social provider, this method call stores
         //the connection to the UserConnection table. Otherwise, this method does not
         //do anything.

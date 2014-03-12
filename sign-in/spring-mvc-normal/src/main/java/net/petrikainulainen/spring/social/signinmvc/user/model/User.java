@@ -9,7 +9,7 @@ import javax.persistence.*;
  * @author Petri Kainulainen
  */
 @Entity
-@Table(name = "users")
+@Table(name = "user_accounts")
 public class User extends BaseEntity<Long> {
 
     @Id

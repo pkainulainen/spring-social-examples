@@ -4,13 +4,15 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="0.0.1" author="Petri" context="db">
-        <sqlFile path="etc/db/schema/db-0.0.1.sql" />
+    <!-- Run this change set when the database is created and integration tests are run -->
+    <changeSet id="0.0.1" author="Petri" context="db,integrationtest">
+        <sqlFile path="schema/db-0.0.1.sql" />
     </changeSet>
 
+    <!-- Run this change set when the database is created -->
     <changeSet id="0.0.2" author="Petri" context="db">
-        <sqlFile path="etc/db/schema/db-0.0.2.sql" />
+        <sqlFile path="schema/db-0.0.2.sql" />
     </changeSet>
 </databaseChangeLog>
