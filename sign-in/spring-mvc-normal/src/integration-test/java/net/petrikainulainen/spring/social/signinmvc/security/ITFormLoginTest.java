@@ -26,7 +26,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -68,9 +67,11 @@ public class ITFormLoginTest {
 
     @Test
     public void login_InvalidPassword_ShouldRedirectUserToLoginForm() throws Exception {
-        CsrfToken csrfToken = new DefaultCsrfToken(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME,
-                IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME,
-                IntegrationTestConstants.CSRF_TOKEN_VALUE);
+        CsrfToken csrfToken = new CsrfTokenBuilder()
+                .headerName(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME)
+                .requestParameterName(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME)
+                .tokenValue(IntegrationTestConstants.CSRF_TOKEN_VALUE)
+                .build();
 
         mockMvc.perform(post("/login/authenticate")
                 .param(REQUEST_PARAM_USERNAME, IntegrationTestConstants.User.REGISTERED_USER.getUsername())
@@ -84,9 +85,11 @@ public class ITFormLoginTest {
 
     @Test
     public void login_UserNotFound_ShouldRedirectUserToLoginForm() throws Exception {
-        CsrfToken csrfToken = new DefaultCsrfToken(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME,
-                IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME,
-                IntegrationTestConstants.CSRF_TOKEN_VALUE);
+        CsrfToken csrfToken = new CsrfTokenBuilder()
+                .headerName(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME)
+                .requestParameterName(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME)
+                .tokenValue(IntegrationTestConstants.CSRF_TOKEN_VALUE)
+                .build();
 
         mockMvc.perform(post("/login/authenticate")
                 .param(REQUEST_PARAM_USERNAME, NOT_FOUND_USER)
@@ -100,9 +103,11 @@ public class ITFormLoginTest {
 
     @Test
     public void login_CredentialsAreCorrect_ShouldRedirectUserToFrontPage() throws Exception {
-        CsrfToken csrfToken = new DefaultCsrfToken(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME,
-                IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME,
-                IntegrationTestConstants.CSRF_TOKEN_VALUE);
+        CsrfToken csrfToken = new CsrfTokenBuilder()
+                .headerName(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME)
+                .requestParameterName(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME)
+                .tokenValue(IntegrationTestConstants.CSRF_TOKEN_VALUE)
+                .build();
 
         mockMvc.perform(post("/login/authenticate")
                 .param(REQUEST_PARAM_USERNAME, IntegrationTestConstants.User.REGISTERED_USER.getUsername())

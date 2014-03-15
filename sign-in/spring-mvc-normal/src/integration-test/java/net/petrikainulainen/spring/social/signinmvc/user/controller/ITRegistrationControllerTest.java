@@ -10,6 +10,7 @@ import net.petrikainulainen.spring.social.signinmvc.IntegrationTestConstants;
 import net.petrikainulainen.spring.social.signinmvc.TestUtil;
 import net.petrikainulainen.spring.social.signinmvc.config.ExampleApplicationContext;
 import net.petrikainulainen.spring.social.signinmvc.config.IntegrationTestContext;
+import net.petrikainulainen.spring.social.signinmvc.security.CsrfTokenBuilder;
 import net.petrikainulainen.spring.social.signinmvc.user.dto.RegistrationForm;
 import net.petrikainulainen.spring.social.signinmvc.user.dto.RegistrationFormBuilder;
 import net.petrikainulainen.spring.social.signinmvc.user.model.SocialMediaService;
@@ -171,9 +172,11 @@ public class ITRegistrationControllerTest {
     public void registerUserAccount_NormalRegistrationAndEmptyForm_ShouldRenderRegistrationFormWithValidationErrors() throws Exception {
         RegistrationForm userAccountData = new RegistrationFormBuilder().build();
 
-        CsrfToken csrfToken = new DefaultCsrfToken(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME,
-                IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME,
-                IntegrationTestConstants.CSRF_TOKEN_VALUE);
+        CsrfToken csrfToken = new CsrfTokenBuilder()
+                .headerName(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME)
+                .requestParameterName(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME)
+                .tokenValue(IntegrationTestConstants.CSRF_TOKEN_VALUE)
+                .build();
 
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -219,9 +222,11 @@ public class ITRegistrationControllerTest {
                 .passwordVerification(PASSWORD)
                 .build();
 
-        CsrfToken csrfToken = new DefaultCsrfToken(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME,
-                IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME,
-                IntegrationTestConstants.CSRF_TOKEN_VALUE);
+        CsrfToken csrfToken = new CsrfTokenBuilder()
+                .headerName(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME)
+                .requestParameterName(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME)
+                .tokenValue(IntegrationTestConstants.CSRF_TOKEN_VALUE)
+                .build();
 
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -256,9 +261,11 @@ public class ITRegistrationControllerTest {
                 .passwordVerification(PASSWORD_VERIFICATION)
                 .build();
 
-        CsrfToken csrfToken = new DefaultCsrfToken(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME,
-                IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME,
-                IntegrationTestConstants.CSRF_TOKEN_VALUE);
+        CsrfToken csrfToken = new CsrfTokenBuilder()
+                .headerName(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME)
+                .requestParameterName(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME)
+                .tokenValue(IntegrationTestConstants.CSRF_TOKEN_VALUE)
+                .build();
 
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -293,9 +300,11 @@ public class ITRegistrationControllerTest {
                 .passwordVerification(PASSWORD)
                 .build();
 
-        CsrfToken csrfToken = new DefaultCsrfToken(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME,
-                IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME,
-                IntegrationTestConstants.CSRF_TOKEN_VALUE);
+        CsrfToken csrfToken = new CsrfTokenBuilder()
+                .headerName(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME)
+                .requestParameterName(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME)
+                .tokenValue(IntegrationTestConstants.CSRF_TOKEN_VALUE)
+                .build();
 
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -330,9 +339,11 @@ public class ITRegistrationControllerTest {
                 .passwordVerification(PASSWORD)
                 .build();
 
-        CsrfToken csrfToken = new DefaultCsrfToken(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME,
-                IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME,
-                IntegrationTestConstants.CSRF_TOKEN_VALUE);
+        CsrfToken csrfToken = new CsrfTokenBuilder()
+                .headerName(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME)
+                .requestParameterName(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME)
+                .tokenValue(IntegrationTestConstants.CSRF_TOKEN_VALUE)
+                .build();
 
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -367,9 +378,11 @@ public class ITRegistrationControllerTest {
                 .passwordVerification(PASSWORD)
                 .build();
 
-        CsrfToken csrfToken = new DefaultCsrfToken(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME,
-                IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME,
-                IntegrationTestConstants.CSRF_TOKEN_VALUE);
+        CsrfToken csrfToken = new CsrfTokenBuilder()
+                .headerName(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME)
+                .requestParameterName(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME)
+                .tokenValue(IntegrationTestConstants.CSRF_TOKEN_VALUE)
+                .build();
 
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -408,9 +421,11 @@ public class ITRegistrationControllerTest {
                 .signInProvider(SIGN_IN_PROVIDER)
                 .build();
 
-        CsrfToken csrfToken = new DefaultCsrfToken(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME,
-                IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME,
-                IntegrationTestConstants.CSRF_TOKEN_VALUE);
+        CsrfToken csrfToken = new CsrfTokenBuilder()
+                .headerName(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME)
+                .requestParameterName(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME)
+                .tokenValue(IntegrationTestConstants.CSRF_TOKEN_VALUE)
+                .build();
 
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -467,9 +482,11 @@ public class ITRegistrationControllerTest {
                 .signInProvider(SIGN_IN_PROVIDER)
                 .build();
 
-        CsrfToken csrfToken = new DefaultCsrfToken(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME,
-                IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME,
-                IntegrationTestConstants.CSRF_TOKEN_VALUE);
+        CsrfToken csrfToken = new CsrfTokenBuilder()
+                .headerName(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME)
+                .requestParameterName(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME)
+                .tokenValue(IntegrationTestConstants.CSRF_TOKEN_VALUE)
+                .build();
 
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -522,9 +539,11 @@ public class ITRegistrationControllerTest {
                 .signInProvider(SIGN_IN_PROVIDER)
                 .build();
 
-        CsrfToken csrfToken = new DefaultCsrfToken(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME,
-                IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME,
-                IntegrationTestConstants.CSRF_TOKEN_VALUE);
+        CsrfToken csrfToken = new CsrfTokenBuilder()
+                .headerName(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME)
+                .requestParameterName(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME)
+                .tokenValue(IntegrationTestConstants.CSRF_TOKEN_VALUE)
+                .build();
 
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -577,9 +596,11 @@ public class ITRegistrationControllerTest {
                 .signInProvider(SIGN_IN_PROVIDER)
                 .build();
 
-        CsrfToken csrfToken = new DefaultCsrfToken(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME,
-                IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME,
-                IntegrationTestConstants.CSRF_TOKEN_VALUE);
+        CsrfToken csrfToken = new CsrfTokenBuilder()
+                .headerName(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME)
+                .requestParameterName(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME)
+                .tokenValue(IntegrationTestConstants.CSRF_TOKEN_VALUE)
+                .build();
 
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -632,9 +653,11 @@ public class ITRegistrationControllerTest {
                 .signInProvider(SIGN_IN_PROVIDER)
                 .build();
 
-        CsrfToken csrfToken = new DefaultCsrfToken(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME,
-                IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME,
-                IntegrationTestConstants.CSRF_TOKEN_VALUE);
+        CsrfToken csrfToken = new CsrfTokenBuilder()
+                .headerName(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME)
+                .requestParameterName(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME)
+                .tokenValue(IntegrationTestConstants.CSRF_TOKEN_VALUE)
+                .build();
 
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
