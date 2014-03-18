@@ -16,13 +16,6 @@
 
     <repositories>
         <repository>
-            <id>spring-snapshot</id>
-            <name>SpringSource Snapshot Repository</name>
-            <url>http://repo.springsource.org/snapshot</url>
-            <releases><enabled>false</enabled></releases>
-            <snapshots><enabled>true</enabled></snapshots>
-        </repository>
-        <repository>
             <id>spring-milestone</id>
             <name>SpringSource Milestone Repository</name>
             <url>http://repo.springsource.org/libs-milestone</url>
