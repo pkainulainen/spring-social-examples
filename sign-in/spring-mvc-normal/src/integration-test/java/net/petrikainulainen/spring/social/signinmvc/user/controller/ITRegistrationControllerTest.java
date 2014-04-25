@@ -8,6 +8,7 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import net.petrikainulainen.spring.social.signinmvc.ColumnSensingFlatXMLDataSetLoader;
 import net.petrikainulainen.spring.social.signinmvc.IntegrationTestConstants;
 import net.petrikainulainen.spring.social.signinmvc.TestUtil;
+import net.petrikainulainen.spring.social.signinmvc.WebTestConstants;
 import net.petrikainulainen.spring.social.signinmvc.config.ExampleApplicationContext;
 import net.petrikainulainen.spring.social.signinmvc.config.IntegrationTestContext;
 import net.petrikainulainen.spring.social.signinmvc.security.CsrfTokenBuilder;
@@ -170,8 +171,6 @@ public class ITRegistrationControllerTest {
     @DatabaseSetup("no-users.xml")
     @ExpectedDatabase(value="no-users.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void registerUserAccount_NormalRegistrationAndEmptyForm_ShouldRenderRegistrationFormWithValidationErrors() throws Exception {
-        RegistrationForm userAccountData = new RegistrationFormBuilder().build();
-
         CsrfToken csrfToken = new CsrfTokenBuilder()
                 .headerName(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME)
                 .requestParameterName(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME)
@@ -180,29 +179,28 @@ public class ITRegistrationControllerTest {
 
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content(TestUtil.convertObjectToFormUrlEncodedBytes(userAccountData))
                 .param(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME, IntegrationTestConstants.CSRF_TOKEN_VALUE)
                 .sessionAttr(IntegrationTestConstants.CSRF_TOKEN_SESSION_ATTRIBUTE_NAME, csrfToken)
-                .sessionAttr("user", userAccountData)
+                .sessionAttr(WebTestConstants.SESSION_ATTRIBUTE_USER_FORM, new RegistrationForm())
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/registrationForm"))
                 .andExpect(forwardedUrl("/WEB-INF/jsp/user/registrationForm.jsp"))
-                .andExpect(model().attribute("user", allOf(
-                        hasProperty("email", isEmptyOrNullString()),
-                        hasProperty("firstName", isEmptyOrNullString()),
-                        hasProperty("lastName", isEmptyOrNullString()),
-                        hasProperty("password", isEmptyOrNullString()),
-                        hasProperty("passwordVerification", isEmptyOrNullString()),
-                        hasProperty("signInProvider", isEmptyOrNullString())
+                .andExpect(model().attribute(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM, allOf(
+                        hasProperty(WebTestConstants.FORM_FIELD_EMAIL, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_FIRST_NAME, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_LAST_NAME, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD_VERIFICATION, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, isEmptyOrNullString())
                 )))
                 .andExpect(model().attributeHasFieldErrors(
-                        "user",
-                        "email",
-                        "firstName",
-                        "lastName",
-                        "password",
-                        "passwordVerification"
+                        WebTestConstants.MODEL_ATTRIBUTE_USER_FORM,
+                        WebTestConstants.FORM_FIELD_EMAIL,
+                        WebTestConstants.FORM_FIELD_FIRST_NAME,
+                        WebTestConstants.FORM_FIELD_LAST_NAME,
+                        WebTestConstants.FORM_FIELD_PASSWORD,
+                        WebTestConstants.FORM_FIELD_PASSWORD_VERIFICATION
                 ));
     }
 
@@ -214,14 +212,6 @@ public class ITRegistrationControllerTest {
         String firstName = TestUtil.createStringWithLength(101);
         String lastName = TestUtil.createStringWithLength(101);
 
-        RegistrationForm userAccountData = new RegistrationFormBuilder()
-                .email(email)
-                .firstName(firstName)
-                .lastName(lastName)
-                .password(PASSWORD)
-                .passwordVerification(PASSWORD)
-                .build();
-
         CsrfToken csrfToken = new CsrfTokenBuilder()
                 .headerName(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME)
                 .requestParameterName(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME)
@@ -230,37 +220,37 @@ public class ITRegistrationControllerTest {
 
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content(TestUtil.convertObjectToFormUrlEncodedBytes(userAccountData))
+                .param(WebTestConstants.FORM_FIELD_EMAIL, email)
+                .param(WebTestConstants.FORM_FIELD_FIRST_NAME, firstName)
+                .param(WebTestConstants.FORM_FIELD_LAST_NAME, lastName)
+                .param(WebTestConstants.FORM_FIELD_PASSWORD, PASSWORD)
+                .param(WebTestConstants.FORM_FIELD_PASSWORD_VERIFICATION, PASSWORD)
                 .param(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME, IntegrationTestConstants.CSRF_TOKEN_VALUE)
                 .sessionAttr(IntegrationTestConstants.CSRF_TOKEN_SESSION_ATTRIBUTE_NAME, csrfToken)
-                .sessionAttr("user", userAccountData)
+                .sessionAttr(WebTestConstants.SESSION_ATTRIBUTE_USER_FORM, new RegistrationForm())
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/registrationForm"))
                 .andExpect(forwardedUrl("/WEB-INF/jsp/user/registrationForm.jsp"))
-                .andExpect(model().attribute("user", allOf(
-                        hasProperty("email", is(email)),
-                        hasProperty("firstName", is(firstName)),
-                        hasProperty("lastName", is(lastName)),
-                        hasProperty("password", is(PASSWORD)),
-                        hasProperty("passwordVerification", is(PASSWORD)),
-                        hasProperty("signInProvider", isEmptyOrNullString())
+                .andExpect(model().attribute(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM, allOf(
+                        hasProperty(WebTestConstants.FORM_FIELD_EMAIL, is(email)),
+                        hasProperty(WebTestConstants.FORM_FIELD_FIRST_NAME, is(firstName)),
+                        hasProperty(WebTestConstants.FORM_FIELD_LAST_NAME, is(lastName)),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD, is(PASSWORD)),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD_VERIFICATION, is(PASSWORD)),
+                        hasProperty(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, isEmptyOrNullString())
                 )))
-                .andExpect(model().attributeHasFieldErrors("user", "email", "firstName", "lastName"));
+                .andExpect(model().attributeHasFieldErrors(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM,
+                        WebTestConstants.FORM_FIELD_EMAIL,
+                        WebTestConstants.FORM_FIELD_FIRST_NAME,
+                        WebTestConstants.FORM_FIELD_LAST_NAME
+                ));
     }
 
     @Test
     @DatabaseSetup("no-users.xml")
     @ExpectedDatabase(value="no-users.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void registerUserAccount_NormalRegistrationAndPasswordMismatch_ShouldRenderRegistrationFormWithValidationErrors() throws Exception {
-        RegistrationForm userAccountData = new RegistrationFormBuilder()
-                .email(EMAIL)
-                .firstName(FIRST_NAME)
-                .lastName(LAST_NAME)
-                .password(PASSWORD)
-                .passwordVerification(PASSWORD_VERIFICATION)
-                .build();
-
         CsrfToken csrfToken = new CsrfTokenBuilder()
                 .headerName(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME)
                 .requestParameterName(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME)
@@ -269,37 +259,36 @@ public class ITRegistrationControllerTest {
 
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content(TestUtil.convertObjectToFormUrlEncodedBytes(userAccountData))
+                .param(WebTestConstants.FORM_FIELD_EMAIL, EMAIL)
+                .param(WebTestConstants.FORM_FIELD_FIRST_NAME, FIRST_NAME)
+                .param(WebTestConstants.FORM_FIELD_LAST_NAME, LAST_NAME)
+                .param(WebTestConstants.FORM_FIELD_PASSWORD, PASSWORD)
+                .param(WebTestConstants.FORM_FIELD_PASSWORD_VERIFICATION, PASSWORD_VERIFICATION)
                 .param(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME, IntegrationTestConstants.CSRF_TOKEN_VALUE)
                 .sessionAttr(IntegrationTestConstants.CSRF_TOKEN_SESSION_ATTRIBUTE_NAME, csrfToken)
-                .sessionAttr("user", userAccountData)
+                .sessionAttr(WebTestConstants.SESSION_ATTRIBUTE_USER_FORM, new RegistrationForm())
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/registrationForm"))
                 .andExpect(forwardedUrl("/WEB-INF/jsp/user/registrationForm.jsp"))
-                .andExpect(model().attribute("user", allOf(
-                        hasProperty("email", is(EMAIL)),
-                        hasProperty("firstName", is(FIRST_NAME)),
-                        hasProperty("lastName", is(LAST_NAME)),
-                        hasProperty("password", is(PASSWORD)),
-                        hasProperty("passwordVerification", is(PASSWORD_VERIFICATION)),
-                        hasProperty("signInProvider", isEmptyOrNullString())
+                .andExpect(model().attribute(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM, allOf(
+                        hasProperty(WebTestConstants.FORM_FIELD_EMAIL, is(EMAIL)),
+                        hasProperty(WebTestConstants.FORM_FIELD_FIRST_NAME, is(FIRST_NAME)),
+                        hasProperty(WebTestConstants.FORM_FIELD_LAST_NAME, is(LAST_NAME)),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD, is(PASSWORD)),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD_VERIFICATION, is(PASSWORD_VERIFICATION)),
+                        hasProperty(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, isEmptyOrNullString())
                 )))
-                .andExpect(model().attributeHasFieldErrors("user", "password", "passwordVerification"));
+                .andExpect(model().attributeHasFieldErrors(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM,
+                        WebTestConstants.FORM_FIELD_PASSWORD,
+                        WebTestConstants.FORM_FIELD_PASSWORD_VERIFICATION
+                ));
     }
 
     @Test
     @DatabaseSetup("/net/petrikainulainen/spring/social/signinmvc/user/users.xml")
     @ExpectedDatabase(value = "/net/petrikainulainen/spring/social/signinmvc/user/users.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void registerUserAccount_NormalRegistrationAndEmailExists_ShouldRenderRegistrationFormWithFieldError() throws Exception {
-        RegistrationForm userAccountData = new RegistrationFormBuilder()
-                .email(IntegrationTestConstants.User.REGISTERED_USER.getUsername())
-                .firstName(FIRST_NAME)
-                .lastName(LAST_NAME)
-                .password(PASSWORD)
-                .passwordVerification(PASSWORD)
-                .build();
-
         CsrfToken csrfToken = new CsrfTokenBuilder()
                 .headerName(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME)
                 .requestParameterName(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME)
@@ -308,37 +297,35 @@ public class ITRegistrationControllerTest {
 
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content(TestUtil.convertObjectToFormUrlEncodedBytes(userAccountData))
+                .param(WebTestConstants.FORM_FIELD_EMAIL, IntegrationTestConstants.User.REGISTERED_USER.getUsername())
+                .param(WebTestConstants.FORM_FIELD_FIRST_NAME, FIRST_NAME)
+                .param(WebTestConstants.FORM_FIELD_LAST_NAME, LAST_NAME)
+                .param(WebTestConstants.FORM_FIELD_PASSWORD, PASSWORD)
+                .param(WebTestConstants.FORM_FIELD_PASSWORD_VERIFICATION, PASSWORD)
                 .param(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME, IntegrationTestConstants.CSRF_TOKEN_VALUE)
                 .sessionAttr(IntegrationTestConstants.CSRF_TOKEN_SESSION_ATTRIBUTE_NAME, csrfToken)
-                .sessionAttr("user", userAccountData)
+                .sessionAttr(WebTestConstants.SESSION_ATTRIBUTE_USER_FORM, new RegistrationForm())
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/registrationForm"))
                 .andExpect(forwardedUrl("/WEB-INF/jsp/user/registrationForm.jsp"))
-                .andExpect(model().attribute("user", allOf(
-                        hasProperty("email", is(IntegrationTestConstants.User.REGISTERED_USER.getUsername())),
-                        hasProperty("firstName", is(FIRST_NAME)),
-                        hasProperty("lastName", is(LAST_NAME)),
-                        hasProperty("password", is(PASSWORD)),
-                        hasProperty("passwordVerification", is(PASSWORD)),
-                        hasProperty("signInProvider", isEmptyOrNullString())
+                .andExpect(model().attribute(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM, allOf(
+                        hasProperty(WebTestConstants.FORM_FIELD_EMAIL, is(IntegrationTestConstants.User.REGISTERED_USER.getUsername())),
+                        hasProperty(WebTestConstants.FORM_FIELD_FIRST_NAME, is(FIRST_NAME)),
+                        hasProperty(WebTestConstants.FORM_FIELD_LAST_NAME, is(LAST_NAME)),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD, is(PASSWORD)),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD_VERIFICATION, is(PASSWORD)),
+                        hasProperty(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, isEmptyOrNullString())
                 )))
-                .andExpect(model().attributeHasFieldErrors("user", "email"));
+                .andExpect(model().attributeHasFieldErrors(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM,
+                        WebTestConstants.FORM_FIELD_EMAIL
+                ));
     }
 
     @Test
     @DatabaseSetup("no-users.xml")
     @ExpectedDatabase(value="no-users.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void registerUserAccount_NormalRegistrationAndMalformedEmail_ShouldRenderRegistrationFormWithValidationError() throws Exception {
-        RegistrationForm userAccountData = new RegistrationFormBuilder()
-                .email(MALFORMED_EMAIL)
-                .firstName(FIRST_NAME)
-                .lastName(LAST_NAME)
-                .password(PASSWORD)
-                .passwordVerification(PASSWORD)
-                .build();
-
         CsrfToken csrfToken = new CsrfTokenBuilder()
                 .headerName(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME)
                 .requestParameterName(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME)
@@ -347,37 +334,35 @@ public class ITRegistrationControllerTest {
 
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content(TestUtil.convertObjectToFormUrlEncodedBytes(userAccountData))
+                .param(WebTestConstants.FORM_FIELD_EMAIL, MALFORMED_EMAIL)
+                .param(WebTestConstants.FORM_FIELD_FIRST_NAME, FIRST_NAME)
+                .param(WebTestConstants.FORM_FIELD_LAST_NAME, LAST_NAME)
+                .param(WebTestConstants.FORM_FIELD_PASSWORD, PASSWORD)
+                .param(WebTestConstants.FORM_FIELD_PASSWORD_VERIFICATION, PASSWORD)
                 .param(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME, IntegrationTestConstants.CSRF_TOKEN_VALUE)
                 .sessionAttr(IntegrationTestConstants.CSRF_TOKEN_SESSION_ATTRIBUTE_NAME, csrfToken)
-                .sessionAttr("user", userAccountData)
+                .sessionAttr(WebTestConstants.SESSION_ATTRIBUTE_USER_FORM, new RegistrationForm())
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/registrationForm"))
                 .andExpect(forwardedUrl("/WEB-INF/jsp/user/registrationForm.jsp"))
-                .andExpect(model().attribute("user", allOf(
-                        hasProperty("email", is(MALFORMED_EMAIL)),
-                        hasProperty("firstName", is(FIRST_NAME)),
-                        hasProperty("lastName", is(LAST_NAME)),
-                        hasProperty("password", is(PASSWORD)),
-                        hasProperty("passwordVerification", is(PASSWORD)),
-                        hasProperty("signInProvider", isEmptyOrNullString())
+                .andExpect(model().attribute(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM, allOf(
+                        hasProperty(WebTestConstants.FORM_FIELD_EMAIL, is(MALFORMED_EMAIL)),
+                        hasProperty(WebTestConstants.FORM_FIELD_FIRST_NAME, is(FIRST_NAME)),
+                        hasProperty(WebTestConstants.FORM_FIELD_LAST_NAME, is(LAST_NAME)),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD, is(PASSWORD)),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD_VERIFICATION, is(PASSWORD)),
+                        hasProperty(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, isEmptyOrNullString())
                 )))
-                .andExpect(model().attributeHasFieldErrors("user", "email"));
+                .andExpect(model().attributeHasFieldErrors(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM,
+                        WebTestConstants.FORM_FIELD_EMAIL
+                ));
     }
 
     @Test
     @DatabaseSetup("no-users.xml")
     @ExpectedDatabase(value = "register-normal-user-expected.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void registerUserAccount_NormalRegistration_ShouldCreateNewUserAccountAndRenderHomePage() throws Exception {
-        RegistrationForm userAccountData = new RegistrationFormBuilder()
-                .email(EMAIL)
-                .firstName(FIRST_NAME)
-                .lastName(LAST_NAME)
-                .password(PASSWORD)
-                .passwordVerification(PASSWORD)
-                .build();
-
         CsrfToken csrfToken = new CsrfTokenBuilder()
                 .headerName(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME)
                 .requestParameterName(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME)
@@ -386,10 +371,14 @@ public class ITRegistrationControllerTest {
 
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content(TestUtil.convertObjectToFormUrlEncodedBytes(userAccountData))
+                .param(WebTestConstants.FORM_FIELD_EMAIL, EMAIL)
+                .param(WebTestConstants.FORM_FIELD_FIRST_NAME, FIRST_NAME)
+                .param(WebTestConstants.FORM_FIELD_LAST_NAME, LAST_NAME)
+                .param(WebTestConstants.FORM_FIELD_PASSWORD, PASSWORD)
+                .param(WebTestConstants.FORM_FIELD_PASSWORD_VERIFICATION, PASSWORD)
                 .param(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME, IntegrationTestConstants.CSRF_TOKEN_VALUE)
                 .sessionAttr(IntegrationTestConstants.CSRF_TOKEN_SESSION_ATTRIBUTE_NAME, csrfToken)
-                .sessionAttr("user", userAccountData)
+                .sessionAttr(WebTestConstants.SESSION_ATTRIBUTE_USER_FORM, new RegistrationForm())
         )
                 .andExpect(status().isMovedTemporarily())
                 .andExpect(redirectedUrl("/"));
@@ -417,10 +406,6 @@ public class ITRegistrationControllerTest {
                     .lastName(LAST_NAME)
                 .build();
 
-        RegistrationForm userAccountData = new RegistrationFormBuilder()
-                .signInProvider(SIGN_IN_PROVIDER)
-                .build();
-
         CsrfToken csrfToken = new CsrfTokenBuilder()
                 .headerName(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME)
                 .requestParameterName(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME)
@@ -429,24 +414,28 @@ public class ITRegistrationControllerTest {
 
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content(TestUtil.convertObjectToFormUrlEncodedBytes(userAccountData))
-                .sessionAttr(ProviderSignInAttempt.SESSION_ATTRIBUTE, socialSignIn)
+                .param(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, SIGN_IN_PROVIDER.name())
                 .param(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME, IntegrationTestConstants.CSRF_TOKEN_VALUE)
                 .sessionAttr(IntegrationTestConstants.CSRF_TOKEN_SESSION_ATTRIBUTE_NAME, csrfToken)
-                .sessionAttr("user", userAccountData)
+                .sessionAttr(ProviderSignInAttempt.SESSION_ATTRIBUTE, socialSignIn)
+                .sessionAttr(WebTestConstants.SESSION_ATTRIBUTE_USER_FORM, new RegistrationForm())
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/registrationForm"))
                 .andExpect(forwardedUrl("/WEB-INF/jsp/user/registrationForm.jsp"))
-                .andExpect(model().attribute("user", allOf(
-                        hasProperty("email", isEmptyOrNullString()),
-                        hasProperty("firstName", isEmptyOrNullString()),
-                        hasProperty("lastName", isEmptyOrNullString()),
-                        hasProperty("password", isEmptyOrNullString()),
-                        hasProperty("passwordVerification", isEmptyOrNullString()),
-                        hasProperty("signInProvider", is(SIGN_IN_PROVIDER))
+                .andExpect(model().attribute(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM, allOf(
+                        hasProperty(WebTestConstants.FORM_FIELD_EMAIL, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_FIRST_NAME, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_LAST_NAME, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD_VERIFICATION, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, is(SIGN_IN_PROVIDER))
                 )))
-                .andExpect(model().attributeHasFieldErrors("user", "email", "firstName", "lastName"));
+                .andExpect(model().attributeHasFieldErrors(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM,
+                        WebTestConstants.FORM_FIELD_EMAIL,
+                        WebTestConstants.FORM_FIELD_FIRST_NAME,
+                        WebTestConstants.FORM_FIELD_LAST_NAME
+                ));
     }
 
     @Test
@@ -475,13 +464,6 @@ public class ITRegistrationControllerTest {
         String firstName = TestUtil.createStringWithLength(101);
         String lastName = TestUtil.createStringWithLength(101);
 
-        RegistrationForm userAccountData = new RegistrationFormBuilder()
-                .email(email)
-                .firstName(firstName)
-                .lastName(lastName)
-                .signInProvider(SIGN_IN_PROVIDER)
-                .build();
-
         CsrfToken csrfToken = new CsrfTokenBuilder()
                 .headerName(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME)
                 .requestParameterName(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME)
@@ -490,24 +472,31 @@ public class ITRegistrationControllerTest {
 
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content(TestUtil.convertObjectToFormUrlEncodedBytes(userAccountData))
-                .sessionAttr(ProviderSignInAttempt.SESSION_ATTRIBUTE, socialSignIn)
+                .param(WebTestConstants.FORM_FIELD_EMAIL, email)
+                .param(WebTestConstants.FORM_FIELD_FIRST_NAME, firstName)
+                .param(WebTestConstants.FORM_FIELD_LAST_NAME, lastName)
+                .param(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, SIGN_IN_PROVIDER.name())
                 .param(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME, IntegrationTestConstants.CSRF_TOKEN_VALUE)
                 .sessionAttr(IntegrationTestConstants.CSRF_TOKEN_SESSION_ATTRIBUTE_NAME, csrfToken)
-                .sessionAttr("user", userAccountData)
+                .sessionAttr(ProviderSignInAttempt.SESSION_ATTRIBUTE, socialSignIn)
+                .sessionAttr(WebTestConstants.SESSION_ATTRIBUTE_USER_FORM, new RegistrationForm())
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/registrationForm"))
                 .andExpect(forwardedUrl("/WEB-INF/jsp/user/registrationForm.jsp"))
-                .andExpect(model().attribute("user", allOf(
-                        hasProperty("email", is(email)),
-                        hasProperty("firstName", is(firstName)),
-                        hasProperty("lastName", is(lastName)),
-                        hasProperty("password", isEmptyOrNullString()),
-                        hasProperty("passwordVerification", isEmptyOrNullString()),
-                        hasProperty("signInProvider", is(SIGN_IN_PROVIDER))
+                .andExpect(model().attribute(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM, allOf(
+                        hasProperty(WebTestConstants.FORM_FIELD_EMAIL, is(email)),
+                        hasProperty(WebTestConstants.FORM_FIELD_FIRST_NAME, is(firstName)),
+                        hasProperty(WebTestConstants.FORM_FIELD_LAST_NAME, is(lastName)),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD_VERIFICATION, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, is(SIGN_IN_PROVIDER))
                 )))
-                .andExpect(model().attributeHasFieldErrors("user", "email", "firstName", "lastName"));
+                .andExpect(model().attributeHasFieldErrors(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM,
+                        WebTestConstants.FORM_FIELD_EMAIL,
+                        WebTestConstants.FORM_FIELD_FIRST_NAME,
+                        WebTestConstants.FORM_FIELD_LAST_NAME
+                ));
     }
 
     @Test
@@ -532,13 +521,6 @@ public class ITRegistrationControllerTest {
                     .lastName(LAST_NAME)
                 .build();
 
-        RegistrationForm userAccountData = new RegistrationFormBuilder()
-                .email(MALFORMED_EMAIL)
-                .firstName(FIRST_NAME)
-                .lastName(LAST_NAME)
-                .signInProvider(SIGN_IN_PROVIDER)
-                .build();
-
         CsrfToken csrfToken = new CsrfTokenBuilder()
                 .headerName(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME)
                 .requestParameterName(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME)
@@ -547,24 +529,29 @@ public class ITRegistrationControllerTest {
 
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content(TestUtil.convertObjectToFormUrlEncodedBytes(userAccountData))
-                .sessionAttr(ProviderSignInAttempt.SESSION_ATTRIBUTE, socialSignIn)
+                .param(WebTestConstants.FORM_FIELD_EMAIL, MALFORMED_EMAIL)
+                .param(WebTestConstants.FORM_FIELD_FIRST_NAME, FIRST_NAME)
+                .param(WebTestConstants.FORM_FIELD_LAST_NAME, LAST_NAME)
+                .param(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, SIGN_IN_PROVIDER.name())
                 .param(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME, IntegrationTestConstants.CSRF_TOKEN_VALUE)
                 .sessionAttr(IntegrationTestConstants.CSRF_TOKEN_SESSION_ATTRIBUTE_NAME, csrfToken)
-                .sessionAttr("user", userAccountData)
+                .sessionAttr(ProviderSignInAttempt.SESSION_ATTRIBUTE, socialSignIn)
+                .sessionAttr(WebTestConstants.SESSION_ATTRIBUTE_USER_FORM, new RegistrationForm())
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/registrationForm"))
                 .andExpect(forwardedUrl("/WEB-INF/jsp/user/registrationForm.jsp"))
-                .andExpect(model().attribute("user", allOf(
-                        hasProperty("email", is(MALFORMED_EMAIL)),
-                        hasProperty("firstName", is(FIRST_NAME)),
-                        hasProperty("lastName", is(LAST_NAME)),
-                        hasProperty("password", isEmptyOrNullString()),
-                        hasProperty("passwordVerification", isEmptyOrNullString()),
-                        hasProperty("signInProvider", is(SIGN_IN_PROVIDER))
+                .andExpect(model().attribute(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM, allOf(
+                        hasProperty(WebTestConstants.FORM_FIELD_EMAIL, is(MALFORMED_EMAIL)),
+                        hasProperty(WebTestConstants.FORM_FIELD_FIRST_NAME, is(FIRST_NAME)),
+                        hasProperty(WebTestConstants.FORM_FIELD_LAST_NAME, is(LAST_NAME)),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD_VERIFICATION, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, is(SIGN_IN_PROVIDER))
                 )))
-                .andExpect(model().attributeHasFieldErrors("user", "email"));
+                .andExpect(model().attributeHasFieldErrors(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM,
+                        WebTestConstants.FORM_FIELD_EMAIL
+                ));
     }
 
     @Test
@@ -589,13 +576,6 @@ public class ITRegistrationControllerTest {
                     .lastName(LAST_NAME)
                 .build();
 
-        RegistrationForm userAccountData = new RegistrationFormBuilder()
-                .email(IntegrationTestConstants.User.REGISTERED_USER.getUsername())
-                .firstName(FIRST_NAME)
-                .lastName(LAST_NAME)
-                .signInProvider(SIGN_IN_PROVIDER)
-                .build();
-
         CsrfToken csrfToken = new CsrfTokenBuilder()
                 .headerName(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME)
                 .requestParameterName(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME)
@@ -604,24 +584,29 @@ public class ITRegistrationControllerTest {
 
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content(TestUtil.convertObjectToFormUrlEncodedBytes(userAccountData))
-                .sessionAttr(ProviderSignInAttempt.SESSION_ATTRIBUTE, socialSignIn)
+                .param(WebTestConstants.FORM_FIELD_EMAIL, IntegrationTestConstants.User.REGISTERED_USER.getUsername())
+                .param(WebTestConstants.FORM_FIELD_FIRST_NAME, FIRST_NAME)
+                .param(WebTestConstants.FORM_FIELD_LAST_NAME, LAST_NAME)
+                .param(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, SIGN_IN_PROVIDER.name())
                 .param(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME, IntegrationTestConstants.CSRF_TOKEN_VALUE)
                 .sessionAttr(IntegrationTestConstants.CSRF_TOKEN_SESSION_ATTRIBUTE_NAME, csrfToken)
-                .sessionAttr("user", userAccountData)
+                .sessionAttr(ProviderSignInAttempt.SESSION_ATTRIBUTE, socialSignIn)
+                .sessionAttr(WebTestConstants.SESSION_ATTRIBUTE_USER_FORM, new RegistrationForm())
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/registrationForm"))
                 .andExpect(forwardedUrl("/WEB-INF/jsp/user/registrationForm.jsp"))
-                .andExpect(model().attribute("user", allOf(
-                        hasProperty("email", is(IntegrationTestConstants.User.REGISTERED_USER.getUsername())),
-                        hasProperty("firstName", is(FIRST_NAME)),
-                        hasProperty("lastName", is(LAST_NAME)),
-                        hasProperty("password", isEmptyOrNullString()),
-                        hasProperty("passwordVerification", isEmptyOrNullString()),
-                        hasProperty("signInProvider", is(SIGN_IN_PROVIDER))
+                .andExpect(model().attribute(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM, allOf(
+                        hasProperty(WebTestConstants.FORM_FIELD_EMAIL, is(IntegrationTestConstants.User.REGISTERED_USER.getUsername())),
+                        hasProperty(WebTestConstants.FORM_FIELD_FIRST_NAME, is(FIRST_NAME)),
+                        hasProperty(WebTestConstants.FORM_FIELD_LAST_NAME, is(LAST_NAME)),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD_VERIFICATION, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, is(SIGN_IN_PROVIDER))
                 )))
-                .andExpect(model().attributeHasFieldErrors("user", "email"));
+                .andExpect(model().attributeHasFieldErrors(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM,
+                        WebTestConstants.FORM_FIELD_EMAIL
+                ));
     }
 
     @Test
@@ -646,13 +631,6 @@ public class ITRegistrationControllerTest {
                     .lastName(LAST_NAME)
                 .build();
 
-        RegistrationForm userAccountData = new RegistrationFormBuilder()
-                .email(EMAIL)
-                .firstName(FIRST_NAME)
-                .lastName(LAST_NAME)
-                .signInProvider(SIGN_IN_PROVIDER)
-                .build();
-
         CsrfToken csrfToken = new CsrfTokenBuilder()
                 .headerName(IntegrationTestConstants.CSRF_TOKEN_HEADER_NAME)
                 .requestParameterName(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME)
@@ -661,11 +639,14 @@ public class ITRegistrationControllerTest {
 
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content(TestUtil.convertObjectToFormUrlEncodedBytes(userAccountData))
-                .sessionAttr(ProviderSignInAttempt.SESSION_ATTRIBUTE, socialSignIn)
+                .param(WebTestConstants.FORM_FIELD_EMAIL, EMAIL)
+                .param(WebTestConstants.FORM_FIELD_FIRST_NAME, FIRST_NAME)
+                .param(WebTestConstants.FORM_FIELD_LAST_NAME, LAST_NAME)
+                .param(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, SIGN_IN_PROVIDER.name())
                 .param(IntegrationTestConstants.CSRF_TOKEN_REQUEST_PARAM_NAME, IntegrationTestConstants.CSRF_TOKEN_VALUE)
                 .sessionAttr(IntegrationTestConstants.CSRF_TOKEN_SESSION_ATTRIBUTE_NAME, csrfToken)
-                .sessionAttr("user", userAccountData)
+                .sessionAttr(ProviderSignInAttempt.SESSION_ATTRIBUTE, socialSignIn)
+                .sessionAttr(WebTestConstants.SESSION_ATTRIBUTE_USER_FORM, new RegistrationForm())
         )
                 .andExpect(status().isMovedTemporarily())
                 .andExpect(redirectedUrl("/"));
