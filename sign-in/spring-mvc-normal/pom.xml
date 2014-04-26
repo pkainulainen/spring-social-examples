@@ -16,11 +16,6 @@
 
     <repositories>
         <repository>
-            <id>spring-milestone</id>
-            <name>SpringSource Milestone Repository</name>
-            <url>http://repo.springsource.org/libs-milestone</url>
-        </repository>
-        <repository>
             <id>local-repository</id>
             <name>local repository</name>
             <url>file://${project.basedir}/etc/mavenrepo</url>
@@ -35,9 +30,9 @@
         <spring.version>4.0.0.RELEASE</spring.version>
         <spring.data.jpa.version>1.4.3.RELEASE</spring.data.jpa.version>
         <spring.security.version>3.2.0.RELEASE</spring.security.version>
-        <spring.social.version>1.1.0.RC1</spring.social.version>
-        <spring.social.facebook.version>1.1.0.RC1</spring.social.facebook.version>
-        <spring.social.twitter.version>1.1.0.RC1</spring.social.twitter.version>
+        <spring.social.version>1.1.0.RELEASE</spring.social.version>
+        <spring.social.facebook.version>1.1.0.RELEASE</spring.social.facebook.version>
+        <spring.social.twitter.version>1.1.0.RELEASE</spring.social.twitter.version>
 
         <build.profile.id>dev</build.profile.id>
         <jdk.version>1.7</jdk.version>
