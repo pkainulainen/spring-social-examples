@@ -14,14 +14,6 @@
         sign in by using a social media service.
     </description>
 
-    <repositories>
-        <repository>
-            <id>local-repository</id>
-            <name>local repository</name>
-            <url>file://${project.basedir}/etc/mavenrepo</url>
-        </repository>
-    </repositories>
-
     <properties>
         <hibernate.version>4.2.4.Final</hibernate.version>
         <liquibase.version>3.1.1</liquibase.version>
@@ -360,6 +352,16 @@
             <groupId>org.springframework.social</groupId>
             <artifactId>spring-social-facebook</artifactId>
             <version>${spring.social.facebook.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>spring-social-core</artifactId>
+                    <groupId>org.springframework.social</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>spring-social-config</artifactId>
+                    <groupId>org.springframework.social</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- Spring Social Twitter -->
         <dependency>
@@ -499,9 +501,9 @@
 
         <!-- TESTING DEPENDENCIES -->
         <dependency>
-            <groupId>org.easytesting</groupId>
-            <artifactId>fest-assert</artifactId>
-            <version>1.4</version>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>1.6.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -548,7 +550,7 @@
         <dependency>
             <groupId>com.github.springtestdbunit</groupId>
             <artifactId>spring-test-dbunit</artifactId>
-            <version>1.1.1-SNAPSHOT</version>
+            <version>1.1.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>

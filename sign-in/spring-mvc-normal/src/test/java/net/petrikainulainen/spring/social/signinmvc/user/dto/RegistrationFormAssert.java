@@ -1,17 +1,17 @@
 package net.petrikainulainen.spring.social.signinmvc.user.dto;
 
 import net.petrikainulainen.spring.social.signinmvc.user.model.SocialMediaService;
-import org.fest.assertions.GenericAssert;
+import org.assertj.core.api.AbstractAssert;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Petri Kainulainen
  */
-public class RegistrationFormAssert extends GenericAssert<RegistrationFormAssert, RegistrationForm> {
+public class RegistrationFormAssert extends AbstractAssert<RegistrationFormAssert, RegistrationForm> {
 
     private RegistrationFormAssert(RegistrationForm actual) {
-        super(RegistrationFormAssert.class, actual);
+        super(actual, RegistrationFormAssert.class);
     }
 
     public static RegistrationFormAssert assertThatRegistrationForm(RegistrationForm actual) {
@@ -21,13 +21,11 @@ public class RegistrationFormAssert extends GenericAssert<RegistrationFormAssert
     public RegistrationFormAssert hasEmail(String email) {
         isNotNull();
 
-        String errorMessage = String.format("Expected email to be <%s> but was <%s>",
-                email,
-                actual.getEmail()
-        );
-
         assertThat(actual.getEmail())
-                .overridingErrorMessage(errorMessage)
+                .overridingErrorMessage("Expected email to be <%s> but was <%s>",
+                        email,
+                        actual.getEmail()
+                )
                 .isEqualTo(email);
 
         return this;
@@ -36,13 +34,11 @@ public class RegistrationFormAssert extends GenericAssert<RegistrationFormAssert
     public RegistrationFormAssert hasFirstName(String firstName) {
         isNotNull();
 
-        String errorMessage = String.format("Expected first name to be <%s> but was <%s>",
-                firstName,
-                actual.getFirstName()
-        );
-
         assertThat(actual.getFirstName())
-                .overridingErrorMessage(errorMessage)
+                .overridingErrorMessage("Expected first name to be <%s> but was <%s>",
+                        firstName,
+                        actual.getFirstName()
+                )
                 .isEqualTo(firstName);
 
         return this;
@@ -51,13 +47,10 @@ public class RegistrationFormAssert extends GenericAssert<RegistrationFormAssert
     public RegistrationFormAssert hasLastName(String lastName) {
         isNotNull();
 
-        String errorMessage = String.format("Expected last name to be <%s> but was <%s>",
-                lastName,
-                actual.getLastName()
-        );
-
         assertThat(actual.getLastName())
-                .overridingErrorMessage(errorMessage)
+                .overridingErrorMessage("Expected last name to be <%s> but was <%s>",
+                        lastName,
+                        actual.getLastName())
                 .isEqualTo(lastName);
 
         return this;
@@ -66,12 +59,10 @@ public class RegistrationFormAssert extends GenericAssert<RegistrationFormAssert
     public RegistrationFormAssert hasNoPassword() {
         isNotNull();
 
-        String errorMessage = String.format("Expected password to be <null> but was <%s>",
-                actual.getPassword()
-        );
-
         assertThat(actual.getPassword())
-                .overridingErrorMessage(errorMessage)
+                .overridingErrorMessage("Expected password to be <null> but was <%s>",
+                        actual.getPassword()
+                )
                 .isNull();
 
         return this;
@@ -80,12 +71,10 @@ public class RegistrationFormAssert extends GenericAssert<RegistrationFormAssert
     public RegistrationFormAssert hasNoPasswordVerification() {
         isNotNull();
 
-        String errorMessage = String.format("Expected password verification to be <null> but was <%s>",
-                actual.getPasswordVerification()
-        );
-
         assertThat(actual.getPasswordVerification())
-                .overridingErrorMessage(errorMessage)
+                .overridingErrorMessage("Expected password verification to be <null> but was <%s>",
+                        actual.getPasswordVerification()
+                )
                 .isNull();
 
         return this;
@@ -94,13 +83,11 @@ public class RegistrationFormAssert extends GenericAssert<RegistrationFormAssert
     public RegistrationFormAssert hasPassword(String password) {
         isNotNull();
 
-        String errorMessage = String.format("Expected password to be <%s> but was <%s>",
-                password,
-                actual.getPassword()
-        );
-
         assertThat(actual.getPassword())
-                .overridingErrorMessage(errorMessage)
+                .overridingErrorMessage("Expected password to be <%s> but was <%s>",
+                        password,
+                        actual.getPassword()
+                )
                 .isEqualTo(password);
 
         return this;
@@ -109,13 +96,11 @@ public class RegistrationFormAssert extends GenericAssert<RegistrationFormAssert
     public RegistrationFormAssert hasPasswordVerification(String passwordVerification) {
         isNotNull();
 
-        String errorMessage = String.format("Expected password verification to be <%s> but was <%s>",
-                passwordVerification,
-                actual.getPasswordVerification()
-        );
-
         assertThat(actual.getPasswordVerification())
-                .overridingErrorMessage(errorMessage)
+                .overridingErrorMessage("Expected password verification to be <%s> but was <%s>",
+                        passwordVerification,
+                        actual.getPasswordVerification()
+                )
                 .isEqualTo(passwordVerification);
 
         return this;
@@ -124,12 +109,10 @@ public class RegistrationFormAssert extends GenericAssert<RegistrationFormAssert
     public RegistrationFormAssert isNormalRegistration() {
         isNotNull();
 
-        String errorMessage = String.format("Expected sign in provider to be <null> but was <%s>",
-                actual.getSignInProvider()
-        );
-
         assertThat(actual.getSignInProvider())
-                .overridingErrorMessage(errorMessage)
+                .overridingErrorMessage("Expected sign in provider to be <null> but was <%s>",
+                        actual.getSignInProvider()
+                )
                 .isNull();
 
         return this;
@@ -138,13 +121,11 @@ public class RegistrationFormAssert extends GenericAssert<RegistrationFormAssert
     public RegistrationFormAssert isSocialSignInWithSignInProvider(SocialMediaService signInProvider) {
         isNotNull();
 
-        String errorMessage = String.format("Expected sign in provider to be <%s> but was <%s>",
-                signInProvider,
-                actual.getSignInProvider()
-        );
-
         assertThat(actual.getSignInProvider())
-                .overridingErrorMessage(errorMessage)
+                .overridingErrorMessage("Expected sign in provider to be <%s> but was <%s>",
+                        signInProvider,
+                        actual.getSignInProvider()
+                )
                 .isEqualTo(signInProvider);
 
         return this;

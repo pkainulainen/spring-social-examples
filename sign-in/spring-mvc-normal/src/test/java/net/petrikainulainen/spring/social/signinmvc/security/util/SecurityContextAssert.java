@@ -4,18 +4,18 @@ import net.petrikainulainen.spring.social.signinmvc.security.dto.ExampleUserDeta
 import net.petrikainulainen.spring.social.signinmvc.security.dto.ExampleUserDetailsAssert;
 import net.petrikainulainen.spring.social.signinmvc.user.model.SocialMediaService;
 import net.petrikainulainen.spring.social.signinmvc.user.model.User;
-import org.fest.assertions.Assertions;
-import org.fest.assertions.GenericAssert;
+import org.assertj.core.api.AbstractAssert;
+import org.assertj.core.api.Assertions;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 
 /**
  * @author Petri Kainulainen
  */
-public class SecurityContextAssert extends GenericAssert<SecurityContextAssert, SecurityContext> {
+public class SecurityContextAssert extends AbstractAssert<SecurityContextAssert, SecurityContext> {
 
     private SecurityContextAssert(SecurityContext actual) {
-        super(SecurityContextAssert.class, actual);
+        super(actual, SecurityContextAssert.class);
     }
 
     public static SecurityContextAssert assertThat(SecurityContext actual) {
@@ -27,9 +27,10 @@ public class SecurityContextAssert extends GenericAssert<SecurityContextAssert, 
 
         Authentication authentication = actual.getAuthentication();
 
-        String errorMessage = String.format("Expected authentication to be <null> but was <%s>.", authentication);
         Assertions.assertThat(authentication)
-                .overridingErrorMessage(errorMessage)
+                .overridingErrorMessage("Expected authentication to be <null> but was <%s>.",
+                        authentication
+                )
                 .isNull();
 
         return this;
@@ -40,9 +41,10 @@ public class SecurityContextAssert extends GenericAssert<SecurityContextAssert, 
 
         ExampleUserDetails loggedIn = (ExampleUserDetails) actual.getAuthentication().getPrincipal();
 
-        String errorMessage = String.format("Expected logged in user to be <%s> but was <null>", user);
         Assertions.assertThat(loggedIn)
-                .overridingErrorMessage(errorMessage)
+                .overridingErrorMessage("Expected logged in user to be <%s> but was <null>",
+                        user
+                )
                 .isNotNull();
 
         ExampleUserDetailsAssert.assertThat(loggedIn)
@@ -61,9 +63,8 @@ public class SecurityContextAssert extends GenericAssert<SecurityContextAssert, 
 
         ExampleUserDetails loggedIn = (ExampleUserDetails) actual.getAuthentication().getPrincipal();
 
-        String errorMessage = String.format("Expected logged in user to be <not null> but was <null>");
         Assertions.assertThat(loggedIn)
-                .overridingErrorMessage(errorMessage)
+                .overridingErrorMessage("Expected logged in user to be <not null> but was <null>")
                 .isNotNull();
 
         ExampleUserDetailsAssert.assertThat(loggedIn)
@@ -77,9 +78,8 @@ public class SecurityContextAssert extends GenericAssert<SecurityContextAssert, 
 
         ExampleUserDetails loggedIn = (ExampleUserDetails) actual.getAuthentication().getPrincipal();
 
-        String errorMessage = String.format("Expected logged in user to be <not null> but was <null>");
         Assertions.assertThat(loggedIn)
-                .overridingErrorMessage(errorMessage)
+                .overridingErrorMessage("Expected logged in user to be <not null> but was <null>")
                 .isNotNull();
 
         ExampleUserDetailsAssert.assertThat(loggedIn)
@@ -93,9 +93,8 @@ public class SecurityContextAssert extends GenericAssert<SecurityContextAssert, 
 
         ExampleUserDetails loggedIn = (ExampleUserDetails) actual.getAuthentication().getPrincipal();
 
-        String errorMessage = String.format("Expected logged in user to be <not null> but was <null>");
         Assertions.assertThat(loggedIn)
-                .overridingErrorMessage(errorMessage)
+                .overridingErrorMessage("Expected logged in user to be <not null> but was <null>")
                 .isNotNull();
 
         ExampleUserDetailsAssert.assertThat(loggedIn)

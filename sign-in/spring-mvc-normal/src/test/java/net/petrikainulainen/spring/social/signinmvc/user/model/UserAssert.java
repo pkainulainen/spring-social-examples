@@ -1,15 +1,15 @@
 package net.petrikainulainen.spring.social.signinmvc.user.model;
 
-import org.fest.assertions.Assertions;
-import org.fest.assertions.GenericAssert;
+import org.assertj.core.api.AbstractAssert;
+import org.assertj.core.api.Assertions;
 
 /**
  * @author Petri Kainulainen
  */
-public class UserAssert extends GenericAssert<UserAssert, User> {
+public class UserAssert extends AbstractAssert<UserAssert, User> {
 
     private UserAssert(User actual) {
-        super(UserAssert.class, actual);
+        super(actual, UserAssert.class);
     }
 
     public static UserAssert assertThat(User actual) {
@@ -19,14 +19,11 @@ public class UserAssert extends GenericAssert<UserAssert, User> {
     public UserAssert hasEmail(String email) {
         isNotNull();
 
-        String errorMessage = String.format(
-                "Expected email to be <%s> but was <%s>",
-                email,
-                actual.getEmail()
-        );
-
         Assertions.assertThat(actual.getEmail())
-                .overridingErrorMessage(errorMessage)
+                .overridingErrorMessage( "Expected email to be <%s> but was <%s>",
+                        email,
+                        actual.getEmail()
+                )
                 .isEqualTo(email);
 
         return this;
@@ -35,14 +32,11 @@ public class UserAssert extends GenericAssert<UserAssert, User> {
     public UserAssert hasFirstName(String firstName) {
         isNotNull();
 
-        String errorMessage = String.format(
-                "Expected first name to be <%s> but was <%s>",
-                firstName,
-                actual.getFirstName()
-        );
-
         Assertions.assertThat(actual.getFirstName())
-                .overridingErrorMessage(errorMessage)
+                .overridingErrorMessage("Expected first name to be <%s> but was <%s>",
+                        firstName,
+                        actual.getFirstName()
+                )
                 .isEqualTo(firstName);
 
         return this;
@@ -51,14 +45,11 @@ public class UserAssert extends GenericAssert<UserAssert, User> {
     public UserAssert hasLastName(String lastName) {
         isNotNull();
 
-        String errorMessage = String.format(
-                "Expected last name to be <%s> but was <%s>",
-                lastName,
-                actual.getLastName()
-        );
-
         Assertions.assertThat(actual.getLastName())
-                .overridingErrorMessage(errorMessage)
+                .overridingErrorMessage( "Expected last name to be <%s> but was <%s>",
+                        lastName,
+                        actual.getLastName()
+                )
                 .isEqualTo(lastName);
 
         return this;
@@ -67,13 +58,10 @@ public class UserAssert extends GenericAssert<UserAssert, User> {
     public UserAssert hasNoId() {
         isNotNull();
 
-        String errorMessage = String.format(
-                "Expected id to be <null> but was <%d>",
-                actual.getId()
-        );
-
         Assertions.assertThat(actual.getId())
-                .overridingErrorMessage(errorMessage)
+                .overridingErrorMessage( "Expected id to be <null> but was <%d>",
+                        actual.getId()
+                )
                 .isNull();
 
         return this;
@@ -82,13 +70,10 @@ public class UserAssert extends GenericAssert<UserAssert, User> {
     public UserAssert hasNoPassword() {
         isNotNull();
 
-        String errorMessage = String.format(
-                "Expected password to be <null> but was <%s>",
-                actual.getPassword()
-        );
-
         Assertions.assertThat(actual.getPassword())
-                .overridingErrorMessage(errorMessage)
+                .overridingErrorMessage("Expected password to be <null> but was <%s>",
+                        actual.getPassword()
+                )
                 .isNull();
 
         return this;
@@ -97,14 +82,11 @@ public class UserAssert extends GenericAssert<UserAssert, User> {
     public UserAssert hasPassword(String password) {
         isNotNull();
 
-        String errorMessage = String.format(
-                "Expected password to be <%s> but was <%s>",
-                password,
-                actual.getPassword()
-        );
-
         Assertions.assertThat(actual.getPassword())
-                .overridingErrorMessage(errorMessage)
+                .overridingErrorMessage( "Expected password to be <%s> but was <%s>",
+                        password,
+                        actual.getPassword()
+                )
                 .isEqualTo(password);
 
         return this;
@@ -113,13 +95,10 @@ public class UserAssert extends GenericAssert<UserAssert, User> {
     public UserAssert isRegisteredByUsingNormalRegistration() {
         isNotNull();
 
-        String errorMessage = String.format(
-                "Expected signInProvider to be <null> but was <%s>",
-                actual.getSignInProvider()
-        );
-
         Assertions.assertThat(actual.getSignInProvider())
-                .overridingErrorMessage(errorMessage)
+                .overridingErrorMessage("Expected signInProvider to be <null> but was <%s>",
+                        actual.getSignInProvider()
+                )
                 .isNull();
 
         return this;
@@ -129,14 +108,11 @@ public class UserAssert extends GenericAssert<UserAssert, User> {
     public UserAssert isRegisteredByUsingSignInProvider(SocialMediaService signInProvider) {
         isNotNull();
 
-        String errorMessage = String.format(
-                "Expected signInProvider to be <%s> but was <%s>",
-                signInProvider,
-                actual.getSignInProvider()
-        );
-
         Assertions.assertThat(actual.getSignInProvider())
-                .overridingErrorMessage(errorMessage)
+                .overridingErrorMessage( "Expected signInProvider to be <%s> but was <%s>",
+                        signInProvider,
+                        actual.getSignInProvider()
+                )
                 .isEqualTo(signInProvider);
 
         return this;
@@ -145,13 +121,10 @@ public class UserAssert extends GenericAssert<UserAssert, User> {
     public UserAssert isRegisteredUser() {
         isNotNull();
 
-        String errorMessage = String.format(
-                "Expected role to be <ROLE_USER> but was <%s>",
-                actual.getRole()
-        );
-
         Assertions.assertThat(actual.getRole())
-                .overridingErrorMessage(errorMessage)
+                .overridingErrorMessage( "Expected role to be <ROLE_USER> but was <%s>",
+                        actual.getRole()
+                )
                 .isEqualTo(Role.ROLE_USER);
 
         return this;

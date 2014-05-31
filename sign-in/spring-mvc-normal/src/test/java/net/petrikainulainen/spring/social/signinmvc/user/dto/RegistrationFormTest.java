@@ -3,7 +3,7 @@ package net.petrikainulainen.spring.social.signinmvc.user.dto;
 import net.petrikainulainen.spring.social.signinmvc.user.model.SocialMediaService;
 import org.junit.Test;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Petri Kainulainen
