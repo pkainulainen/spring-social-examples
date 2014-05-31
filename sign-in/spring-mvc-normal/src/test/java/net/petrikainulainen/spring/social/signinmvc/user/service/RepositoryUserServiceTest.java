@@ -52,7 +52,7 @@ public class RepositoryUserServiceTest {
                 .email(EMAIL)
                 .firstName(FIRST_NAME)
                 .lastName(LAST_NAME)
-                .signInProvider(SIGN_IN_PROVIDER)
+                .isSocialSignInViaSignInProvider(SIGN_IN_PROVIDER)
                 .build();
 
         when(repositoryMock.findByEmail(EMAIL)).thenReturn(null);
@@ -86,7 +86,7 @@ public class RepositoryUserServiceTest {
                 .email(EMAIL)
                 .firstName(FIRST_NAME)
                 .lastName(LAST_NAME)
-                .signInProvider(SIGN_IN_PROVIDER)
+                .isSocialSignInViaSignInProvider(SIGN_IN_PROVIDER)
                 .build();
         when(repositoryMock.findByEmail(EMAIL)).thenReturn(new User());
 
