@@ -67,18 +67,6 @@ public class UserAssert extends AbstractAssert<UserAssert, User> {
         return this;
     }
 
-    public UserAssert hasNoPassword() {
-        isNotNull();
-
-        Assertions.assertThat(actual.getPassword())
-                .overridingErrorMessage("Expected password to be <null> but was <%s>",
-                        actual.getPassword()
-                )
-                .isNull();
-
-        return this;
-    }
-
     public UserAssert hasPassword(String password) {
         isNotNull();
 
@@ -115,7 +103,19 @@ public class UserAssert extends AbstractAssert<UserAssert, User> {
                 )
                 .isEqualTo(signInProvider);
 
+        hasNoPassword();
+
         return this;
+    }
+
+    private void hasNoPassword() {
+        isNotNull();
+
+        Assertions.assertThat(actual.getPassword())
+                .overridingErrorMessage("Expected password to be <null> but was <%s>",
+                        actual.getPassword()
+                )
+                .isNull();
     }
 
     public UserAssert isRegisteredUser() {

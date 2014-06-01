@@ -75,7 +75,6 @@ public class RepositoryUserServiceTest {
                 .hasEmail(EMAIL)
                 .hasFirstName(FIRST_NAME)
                 .hasLastName(LAST_NAME)
-                .hasNoPassword()
                 .isRegisteredUser()
                 .isRegisteredByUsingSignInProvider(SIGN_IN_PROVIDER);
 
