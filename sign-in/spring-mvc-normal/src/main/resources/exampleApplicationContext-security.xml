@@ -33,6 +33,9 @@
 
         <!-- The rest of our application is protected. -->
         <security:intercept-url pattern="/**" access="hasRole('ROLE_USER')"/>
+        
+        <!-- Enable Remember Me Services -->
+        <security:remember-me key="myRememberMeKey" services-ref="customPersistentTokenBasedRememberMeServices" />
 
         <!-- Adds social authentication filter to the Spring Security filter chain. -->
         <security:custom-filter ref="socialAuthenticationFilter" before="PRE_AUTH_FILTER" />
@@ -67,7 +70,30 @@
 
         <!-- Sets the url of the registration form. -->
         <property name="signupUrl" value="/user/register"/>
+        <!-- Define remember-me services for social authentication filter -->
+        <property name="rememberMeServices" ref="customPersistentTokenBasedRememberMeServices" />
     </bean>
+    
+    <!--
+        Configures the custom persistent token-based remember me service which handles persistent remember
+        using browser cookie for both regular login and social login.
+    -->
+    <bean id="customPersistentTokenBasedRememberMeServices" class="net.petrikainulainen.spring.social.signinmvc.security.service.CustomPersistentTokenBasedRememberMeServices">
+    	<constructor-arg value="myRememberMeKey"/>
+    	<constructor-arg ref="userDetailsService"/>
+    	<constructor-arg ref="tokenRepository"/>
+        <property name="parameter" value="rememberme"/>
+        <property name="tokenValiditySeconds" value="1209600"/>
+    </bean>
+    
+    <!--
+        Configures the JDBC token repository for remember me services.
+    -->
+    <bean id="tokenRepository"
+		class="org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl">
+		<property name="createTableOnStartup" value="false" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
 
     <!--
         Configures the social authentication provider which processes authentication requests
