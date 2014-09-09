@@ -4,7 +4,6 @@ import net.petrikainulainen.spring.social.signinmvc.security.service.RepositoryU
 import net.petrikainulainen.spring.social.signinmvc.security.service.SimpleSocialUserDetailsService;
 import net.petrikainulainen.spring.social.signinmvc.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -57,13 +56,14 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
                         .antMatchers(
                                 "/auth/**",
                                 "/login",
-                                "/signin/**",
                                 "/signup/**",
                                 "/user/register/**"
                         ).permitAll()
                         //The rest of the our application is protected.
                         .antMatchers("/**").hasRole("USER")
                 //Adds the SocialAuthenticationFilter to Spring Security's filter chain.
+                .and()
+                    .rememberMe()
                 .and()
                     .apply(new SpringSocialConfigurer());
     }
