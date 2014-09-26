@@ -11,33 +11,27 @@
        http://www.springframework.org/schema/social/twitter http://www.springframework.org/schema/social/spring-social-twitter.xsd
        http://www.springframework.org/schema/social/facebook http://www.springframework.org/schema/social/spring-social-facebook.xsd">
 
+    <!-- Ensures that configuration properties are read from a property file -->
+    <context:property-placeholder location="classpath:application.properties"/>
+
     <!--
-        Enabled when the active Spring profile is 'application'.
-        This is required so that we can write integration tests
-        for our application.
+        Configures FB and Twitter support.
     -->
-    <beans profile="application">
-        <!-- Ensures that configuration properties are read from a property file -->
-        <context:property-placeholder location="classpath:application.properties"/>
+    <facebook:config app-id="${facebook.app.id}" app-secret="${facebook.app.secret}"/>
+    <twitter:config app-id="${twitter.consumer.key}" app-secret="${twitter.consumer.secret}"/>
 
-        <!--
-            Configures FB and Twitter support.
-        -->
-        <facebook:config app-id="${facebook.app.id}" app-secret="${facebook.app.secret}"/>
-        <twitter:config app-id="${twitter.consumer.key}" app-secret="${twitter.consumer.secret}"/>
+    <!--
+        Configures the connection repository. This application uses JDBC
+        connection repository which saves connection details to database.
+        This repository uses the data source bean for obtaining database
+        connection.
+    -->
+    <social:jdbc-connection-repository/>
 
-        <!--
-            Configures the connection repository. This application uses JDBC
-            connection repository which saves connection details to database.
-            This repository uses the data source bean for obtaining database
-            connection.
-        -->
-        <social:jdbc-connection-repository/>
-
-        <!--
-            This bean manages the connection flow between the account provider and
-            the example application.
-        -->
-        <bean id="connectController" class="org.springframework.social.connect.web.ConnectController" autowire="constructor"/>
-    </beans>
+    <!--
+        This bean manages the connection flow between the account provider and
+        the example application.
+    -->
+    <bean id="connectController" class="org.springframework.social.connect.web.ConnectController"
+          autowire="constructor"/>
 </beans>
