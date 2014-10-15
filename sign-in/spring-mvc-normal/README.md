@@ -26,7 +26,7 @@ This example application has the following software prerequisites:
 * Twitter application (Enable the "allow this application to be used to Sign in with Twitter" checkbox)
 * Facebook application (Select "website with Facebook login" when you are asked how your application integrates with FB)
 
-You create the required applications by following these links:
+You can create the required applications by following these links:
 
 * [Facebook Developers](https://developers.facebook.com/)
 * [Twitter Developers](https://dev.twitter.com/)
@@ -45,7 +45,7 @@ Preparations
 --------------
 
 * Ensure that you have installed all required software.
-* Ensure that you have created a Twitter application used with this example.
+* Ensure that you have created a Facebook and a Twitter application used with this example.
 * Create a MySQL database for the example application.
 
 Configuration
