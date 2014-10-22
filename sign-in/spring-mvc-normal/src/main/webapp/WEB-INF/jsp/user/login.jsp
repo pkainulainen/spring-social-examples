@@ -45,7 +45,7 @@
             </form>
             <div class="row">
                 <div class="form-group col-lg-4">
-                    <a href="/user/register"><spring:message code="label.navigation.registration.link"/></a>
+                    <a href="${pageContext.request.contextPath}/user/register"><spring:message code="label.navigation.registration.link"/></a>
                 </div>
             </div>
         </div>
@@ -55,12 +55,12 @@
             <h2><spring:message code="label.social.sign.in.title"/></h2>
             <div class="row social-button-row">
                 <div class="col-lg-4">
-                    <a href="<c:url value="/auth/facebook"/>"><button class="btn btn-facebook"><i class="icon-facebook"></i> | <spring:message code="label.facebook.sign.in.button"/></button></a>
+                    <a href="${pageContext.request.contextPath}/auth/facebook"><button class="btn btn-facebook"><i class="icon-facebook"></i> | <spring:message code="label.facebook.sign.in.button"/></button></a>
                 </div>
             </div>
             <div class="row social-button-row">
                 <div class="col-lg-4">
-                    <a href="<c:url value="/auth/twitter"/>"><button class="btn btn-twitter"><i class="icon-twitter"></i> | <spring:message code="label.twitter.sign.in.button"/></button></a>
+                    <a href="${pageContext.request.contextPath}/auth/twitter"><button class="btn btn-twitter"><i class="icon-twitter"></i> | <spring:message code="label.twitter.sign.in.button"/></button></a>
                 </div>
             </div>
         </div>

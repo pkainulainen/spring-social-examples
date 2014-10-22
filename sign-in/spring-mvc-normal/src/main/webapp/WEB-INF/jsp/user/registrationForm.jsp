@@ -16,7 +16,7 @@
     <sec:authorize access="isAnonymous()">
         <div class="panel panel-default">
             <div class="panel-body">
-                <form:form action="/user/register" commandName="user" method="POST" enctype="utf8" role="form">
+                <form:form action="${pageContext.request.contextPath}/user/register" commandName="user" method="POST" enctype="utf8" role="form">
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     <c:if test="${user.signInProvider != null}">
                         <form:hidden path="signInProvider"/>
