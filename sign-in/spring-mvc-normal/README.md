@@ -77,7 +77,7 @@ Initializing the database
 
 You can initialize the database by running the following command at the command prompt:
 
-    mvn liquibase:update -P dev
+    mvn resources:resources liquibase:update -P dev -e -X
 
 Running The Application
 -------------------------
