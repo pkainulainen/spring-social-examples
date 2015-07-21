@@ -5,7 +5,7 @@ import net.petrikainulainen.spring.social.signinmvc.user.model.SocialMediaServic
 import net.petrikainulainen.spring.social.signinmvc.user.model.User;
 import net.petrikainulainen.spring.social.signinmvc.user.model.UserBuilder;
 import net.petrikainulainen.spring.social.signinmvc.user.repository.UserRepository;
-import org.fest.assertions.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,13 +13,14 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import static com.googlecode.catchexception.CatchException.catchException;
 import static com.googlecode.catchexception.CatchException.caughtException;
-
 import static net.petrikainulainen.spring.social.signinmvc.security.dto.ExampleUserDetailsAssert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Petri Kainulainen

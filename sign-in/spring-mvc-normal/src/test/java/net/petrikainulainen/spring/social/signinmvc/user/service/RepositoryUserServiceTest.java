@@ -5,7 +5,7 @@ import net.petrikainulainen.spring.social.signinmvc.user.dto.RegistrationFormBui
 import net.petrikainulainen.spring.social.signinmvc.user.model.SocialMediaService;
 import net.petrikainulainen.spring.social.signinmvc.user.model.User;
 import net.petrikainulainen.spring.social.signinmvc.user.repository.UserRepository;
-import org.fest.assertions.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +18,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import static com.googlecode.catchexception.CatchException.catchException;
 import static com.googlecode.catchexception.CatchException.caughtException;
 import static net.petrikainulainen.spring.social.signinmvc.user.model.UserAssert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.isA;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Petri Kainulainen
@@ -52,7 +57,7 @@ public class RepositoryUserServiceTest {
                 .email(EMAIL)
                 .firstName(FIRST_NAME)
                 .lastName(LAST_NAME)
-                .signInProvider(SIGN_IN_PROVIDER)
+                .isSocialSignInViaSignInProvider(SIGN_IN_PROVIDER)
                 .build();
 
         when(repositoryMock.findByEmail(EMAIL)).thenReturn(null);
@@ -70,7 +75,6 @@ public class RepositoryUserServiceTest {
                 .hasEmail(EMAIL)
                 .hasFirstName(FIRST_NAME)
                 .hasLastName(LAST_NAME)
-                .hasNoPassword()
                 .isRegisteredUser()
                 .isRegisteredByUsingSignInProvider(SIGN_IN_PROVIDER);
 
@@ -86,7 +90,7 @@ public class RepositoryUserServiceTest {
                 .email(EMAIL)
                 .firstName(FIRST_NAME)
                 .lastName(LAST_NAME)
-                .signInProvider(SIGN_IN_PROVIDER)
+                .isSocialSignInViaSignInProvider(SIGN_IN_PROVIDER)
                 .build();
         when(repositoryMock.findByEmail(EMAIL)).thenReturn(new User());
 

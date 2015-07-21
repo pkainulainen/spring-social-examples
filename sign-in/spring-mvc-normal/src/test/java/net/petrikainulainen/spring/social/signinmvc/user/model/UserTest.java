@@ -30,8 +30,7 @@ public class UserTest {
                 .hasFirstName(FIRST_NAME)
                 .hasLastName(LAST_NAME)
                 .isRegisteredUser()
-                .isRegisteredByUsingSignInProvider(SIGN_IN_PROVIDER)
-                .hasNoPassword();
+                .isRegisteredByUsingSignInProvider(SIGN_IN_PROVIDER);
     }
 
     @Test

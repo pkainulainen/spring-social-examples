@@ -1,16 +1,16 @@
 package net.petrikainulainen.spring.social.signinmvc.common.model;
 
-import org.fest.assertions.Assertions;
-import org.fest.assertions.GenericAssert;
+import org.assertj.core.api.AbstractAssert;
+import org.assertj.core.api.Assertions;
 import org.joda.time.DateTime;
 
 /**
  * @author Petri Kainulainen
  */
-public class BaseEntityAssert extends GenericAssert<BaseEntityAssert, BaseEntity> {
+public class BaseEntityAssert extends AbstractAssert<BaseEntityAssert, BaseEntity> {
 
     public BaseEntityAssert(BaseEntity actual) {
-        super(BaseEntityAssert.class, actual);
+        super(actual, BaseEntityAssert.class);
     }
 
     public static BaseEntityAssert assertThat(BaseEntity actual) {
@@ -20,13 +20,11 @@ public class BaseEntityAssert extends GenericAssert<BaseEntityAssert, BaseEntity
     public BaseEntityAssert creationTimeAndModificationTimeAreEqual() {
         isNotNull();
 
-        String errorMessage = String.format(
-                "Expected creation time to be equal than modification time but were <%s> and <%s>",
-                actual.getCreationTime(),
-                actual.getModificationTime()
-        );
         Assertions.assertThat(actual.getCreationTime())
-                .overridingErrorMessage(errorMessage)
+                .overridingErrorMessage("Expected creation time to be equal than modification time but were <%s> and <%s>",
+                        actual.getCreationTime(),
+                        actual.getModificationTime()
+                )
                 .isEqualTo(actual.getModificationTime());
 
         return this;
@@ -35,8 +33,9 @@ public class BaseEntityAssert extends GenericAssert<BaseEntityAssert, BaseEntity
     public BaseEntityAssert creationTimeIsSet() {
         isNotNull();
 
-        String errorMessage = "Expected creation time to be set but was <null>";
-        Assertions.assertThat(actual.getCreationTime()).overridingErrorMessage(errorMessage).isNotNull();
+        Assertions.assertThat(actual.getCreationTime())
+                .overridingErrorMessage("Expected creation time to be set but was <null>")
+                .isNotNull();
 
         return this;
     }
@@ -44,17 +43,14 @@ public class BaseEntityAssert extends GenericAssert<BaseEntityAssert, BaseEntity
     public BaseEntityAssert modificationTimeIsAfterCreationTime() {
         isNotNull();
 
-        String errorMessage = String.format(
-                "Expected modification time to be after creation time but were <%s> and <%s>",
-                actual.getModificationTime(),
-                actual.getCreationTime()
-        );
-
         DateTime creationTime = actual.getCreationTime();
         DateTime modificationTime = actual.getModificationTime();
 
         Assertions.assertThat(modificationTime.isAfter(creationTime))
-                .overridingErrorMessage(errorMessage)
+                .overridingErrorMessage("Expected modification time to be after creation time but were <%s> and <%s>",
+                        actual.getModificationTime(),
+                        actual.getCreationTime()
+                )
                 .isTrue();
 
         return this;
@@ -63,9 +59,8 @@ public class BaseEntityAssert extends GenericAssert<BaseEntityAssert, BaseEntity
     public BaseEntityAssert modificationTimeIsSet() {
         isNotNull();
 
-        String errorMessage = "Expected modification time be set was <null>";
         Assertions.assertThat(actual.getModificationTime())
-                .overridingErrorMessage(errorMessage)
+                .overridingErrorMessage("Expected modification time be set was <null>")
                 .isNotNull();
 
         return this;

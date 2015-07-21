@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <user_accounts id="1"
+                   creation_time="2014-02-20 11:13:28"
+                   email="facebook@socialuser.com"
+                   first_name="Facebook"
+                   last_name="User"
+                   modification_time="2014-02-20 11:13:28"
+                   role="ROLE_USER"
+                   sign_in_provider="FACEBOOK"
+                   version="0"/>
+    <user_accounts id="2"
+                   creation_time="2014-02-20 11:13:28"
+                   email="twitter@socialuser.com"
+                   first_name="Twitter"
+                   last_name="User"
+                   modification_time="2014-02-20 11:13:28"
+                   role="ROLE_USER"
+                   sign_in_provider="TWITTER"
+                   version="0"/>
+    <user_accounts id="3"
+                   creation_time="2014-02-20 11:13:28"
+                   email="registered@user.com"
+                   first_name="RegisteredUser"
+                   last_name="User"
+                   modification_time="2014-02-20 11:13:28"
+                   password="$2a$10$PFSfOaC2IFPG.1HjO05KoODRVSdESQ5q7ek4IyzVfTf.VWlKDa/.e"
+                   role="ROLE_USER"
+                   version="0"/>
+
+    <UserConnection/>
+</dataset>

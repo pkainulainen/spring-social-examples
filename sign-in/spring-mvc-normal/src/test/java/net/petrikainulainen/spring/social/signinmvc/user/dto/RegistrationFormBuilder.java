@@ -38,7 +38,7 @@ public class RegistrationFormBuilder {
         return this;
     }
 
-    public RegistrationFormBuilder signInProvider(SocialMediaService signInProvider) {
+    public RegistrationFormBuilder isSocialSignInViaSignInProvider(SocialMediaService signInProvider) {
         dto.setSignInProvider(signInProvider);
         return this;
     }

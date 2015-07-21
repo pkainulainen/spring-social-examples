@@ -1,16 +1,16 @@
 package net.petrikainulainen.spring.social.signinmvc.user.controller;
 
-import org.fest.assertions.Assertions;
-import org.fest.assertions.GenericAssert;
+import org.assertj.core.api.AbstractAssert;
+import org.assertj.core.api.Assertions;
 import org.springframework.social.connect.web.TestProviderSignInAttempt;
 
 /**
  * @author Petri Kainulainen
  */
-public class TestProviderSignInAttemptAssert extends GenericAssert<TestProviderSignInAttemptAssert, TestProviderSignInAttempt> {
+public class TestProviderSignInAttemptAssert extends AbstractAssert<TestProviderSignInAttemptAssert, TestProviderSignInAttempt> {
 
     private TestProviderSignInAttemptAssert(TestProviderSignInAttempt actual) {
-        super(TestProviderSignInAttemptAssert.class, actual);
+        super(actual, TestProviderSignInAttemptAssert.class);
     }
 
     public static TestProviderSignInAttemptAssert assertThatSignIn(TestProviderSignInAttempt actual) {
@@ -20,12 +20,10 @@ public class TestProviderSignInAttemptAssert extends GenericAssert<TestProviderS
     public TestProviderSignInAttemptAssert createdNoConnections() {
         isNotNull();
 
-        String error = String.format(
-                "Expected that no connections were created but found <%d> connection",
-                actual.getConnections().size()
-        );
         Assertions.assertThat(actual.getConnections())
-                .overridingErrorMessage(error)
+                .overridingErrorMessage( "Expected that no connections were created but found <%d> connection",
+                        actual.getConnections().size()
+                )
                 .isEmpty();
 
         return this;
@@ -34,13 +32,10 @@ public class TestProviderSignInAttemptAssert extends GenericAssert<TestProviderS
     public TestProviderSignInAttemptAssert createdConnectionForUserId(String userId) {
         isNotNull();
 
-        String error = String.format(
-                "Expected that connection was created for user id <%s> but found none.",
-                userId
-        );
-
         Assertions.assertThat(actual.getConnections())
-                .overridingErrorMessage(error)
+                .overridingErrorMessage("Expected that connection was created for user id <%s> but found none.",
+                        userId
+                )
                 .contains(userId);
 
         return this;

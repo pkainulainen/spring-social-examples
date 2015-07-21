@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <user_accounts email="john.smith@gmail.com"
+                   first_name="John"
+                   last_name="Smith"
+                   role="ROLE_USER"
+                   version="0"/>
+
+    <UserConnection/>
+</dataset>

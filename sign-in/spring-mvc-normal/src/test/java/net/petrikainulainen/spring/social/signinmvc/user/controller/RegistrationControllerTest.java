@@ -1,25 +1,26 @@
 package net.petrikainulainen.spring.social.signinmvc.user.controller;
 
 import net.petrikainulainen.spring.social.signinmvc.TestUtil;
+import net.petrikainulainen.spring.social.signinmvc.WebTestConstants;
 import net.petrikainulainen.spring.social.signinmvc.config.UnitTestContext;
 import net.petrikainulainen.spring.social.signinmvc.config.WebAppContext;
-import net.petrikainulainen.spring.social.signinmvc.user.model.SocialMediaService;
-import net.petrikainulainen.spring.social.signinmvc.user.service.DuplicateEmailException;
-import org.springframework.social.connect.support.TestProviderSignInAttemptBuilder;
-import org.springframework.social.connect.web.TestProviderSignInAttempt;
 import net.petrikainulainen.spring.social.signinmvc.user.dto.RegistrationForm;
-import net.petrikainulainen.spring.social.signinmvc.user.dto.RegistrationFormBuilder;
+import net.petrikainulainen.spring.social.signinmvc.user.model.SocialMediaService;
 import net.petrikainulainen.spring.social.signinmvc.user.model.User;
 import net.petrikainulainen.spring.social.signinmvc.user.model.UserBuilder;
+import net.petrikainulainen.spring.social.signinmvc.user.service.DuplicateEmailException;
 import net.petrikainulainen.spring.social.signinmvc.user.service.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.social.connect.support.TestProviderSignInAttemptBuilder;
 import org.springframework.social.connect.web.ProviderSignInAttempt;
+import org.springframework.social.connect.web.TestProviderSignInAttempt;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -29,14 +30,24 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static net.petrikainulainen.spring.social.signinmvc.security.util.SecurityContextAssert.assertThat;
 import static net.petrikainulainen.spring.social.signinmvc.user.controller.TestProviderSignInAttemptAssert.assertThatSignIn;
+import static net.petrikainulainen.spring.social.signinmvc.user.dto.RegistrationFormAssert.assertThatRegistrationForm;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.isA;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 /**
  * @author Petri Kainulainen
@@ -80,13 +91,13 @@ public class RegistrationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/registrationForm"))
                 .andExpect(forwardedUrl("/WEB-INF/jsp/user/registrationForm.jsp"))
-                .andExpect(model().attribute("user", allOf(
-                        hasProperty("email", isEmptyOrNullString()),
-                        hasProperty("firstName", isEmptyOrNullString()),
-                        hasProperty("lastName", isEmptyOrNullString()),
-                        hasProperty("password", isEmptyOrNullString()),
-                        hasProperty("passwordVerification", isEmptyOrNullString()),
-                        hasProperty("signInProvider", isEmptyOrNullString())
+                .andExpect(model().attribute(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM, allOf(
+                        hasProperty(WebTestConstants.FORM_FIELD_EMAIL, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_FIRST_NAME, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_LAST_NAME, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD_VERIFICATION, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, isEmptyOrNullString())
                 )));
 
         verifyZeroInteractions(userServiceMock);
@@ -109,13 +120,13 @@ public class RegistrationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/registrationForm"))
                 .andExpect(forwardedUrl("/WEB-INF/jsp/user/registrationForm.jsp"))
-                .andExpect(model().attribute("user", allOf(
-                        hasProperty("email", is(EMAIL)),
-                        hasProperty("firstName", is(FIRST_NAME)),
-                        hasProperty("lastName", is(LAST_NAME)),
-                        hasProperty("password", isEmptyOrNullString()),
-                        hasProperty("passwordVerification", isEmptyOrNullString()),
-                        hasProperty("signInProvider", is(SIGN_IN_PROVIDER))
+                .andExpect(model().attribute(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM, allOf(
+                        hasProperty(WebTestConstants.FORM_FIELD_EMAIL, is(EMAIL)),
+                        hasProperty(WebTestConstants.FORM_FIELD_FIRST_NAME, is(FIRST_NAME)),
+                        hasProperty(WebTestConstants.FORM_FIELD_LAST_NAME, is(LAST_NAME)),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD_VERIFICATION, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, is(SIGN_IN_PROVIDER))
                 )));
 
         verifyZeroInteractions(userServiceMock);
@@ -135,13 +146,13 @@ public class RegistrationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/registrationForm"))
                 .andExpect(forwardedUrl("/WEB-INF/jsp/user/registrationForm.jsp"))
-                .andExpect(model().attribute("user", allOf(
-                        hasProperty("email", isEmptyOrNullString()),
-                        hasProperty("firstName", isEmptyOrNullString()),
-                        hasProperty("lastName", isEmptyOrNullString()),
-                        hasProperty("password", isEmptyOrNullString()),
-                        hasProperty("passwordVerification", isEmptyOrNullString()),
-                        hasProperty("signInProvider", is(SIGN_IN_PROVIDER))
+                .andExpect(model().attribute(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM, allOf(
+                        hasProperty(WebTestConstants.FORM_FIELD_EMAIL, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_FIRST_NAME, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_LAST_NAME, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD_VERIFICATION, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, is(SIGN_IN_PROVIDER))
                 )));
 
         verifyZeroInteractions(userServiceMock);
@@ -149,31 +160,28 @@ public class RegistrationControllerTest {
 
     @Test
     public void registerUserAccount_NormalRegistrationAndEmptyForm_ShouldRenderRegistrationFormWithValidationErrors() throws Exception {
-        RegistrationForm userAccountData = new RegistrationFormBuilder().build();
-
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content(TestUtil.convertObjectToFormUrlEncodedBytes(userAccountData))
-                .sessionAttr("user", userAccountData)
+                .sessionAttr(WebTestConstants.SESSION_ATTRIBUTE_USER_FORM, new RegistrationForm())
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/registrationForm"))
                 .andExpect(forwardedUrl("/WEB-INF/jsp/user/registrationForm.jsp"))
-                .andExpect(model().attribute("user", allOf(
-                        hasProperty("email", isEmptyOrNullString()),
-                        hasProperty("firstName", isEmptyOrNullString()),
-                        hasProperty("lastName", isEmptyOrNullString()),
-                        hasProperty("password", isEmptyOrNullString()),
-                        hasProperty("passwordVerification", isEmptyOrNullString()),
-                        hasProperty("signInProvider", isEmptyOrNullString())
+                .andExpect(model().attribute(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM, allOf(
+                        hasProperty(WebTestConstants.FORM_FIELD_EMAIL, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_FIRST_NAME, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_LAST_NAME, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD_VERIFICATION, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, isEmptyOrNullString())
                 )))
                 .andExpect(model().attributeHasFieldErrors(
-                        "user",
-                        "email",
-                        "firstName",
-                        "lastName",
-                        "password",
-                        "passwordVerification"
+                        WebTestConstants.MODEL_ATTRIBUTE_USER_FORM,
+                        WebTestConstants.FORM_FIELD_EMAIL,
+                        WebTestConstants.FORM_FIELD_FIRST_NAME,
+                        WebTestConstants.FORM_FIELD_LAST_NAME,
+                        WebTestConstants.FORM_FIELD_PASSWORD,
+                        WebTestConstants.FORM_FIELD_PASSWORD_VERIFICATION
                 ));
 
         assertThat(SecurityContextHolder.getContext()).userIsAnonymous();
@@ -186,31 +194,31 @@ public class RegistrationControllerTest {
         String firstName = TestUtil.createStringWithLength(101);
         String lastName = TestUtil.createStringWithLength(101);
 
-        RegistrationForm userAccountData = new RegistrationFormBuilder()
-                .email(email)
-                .firstName(firstName)
-                .lastName(lastName)
-                .password(PASSWORD)
-                .passwordVerification(PASSWORD)
-                .build();
-
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content(TestUtil.convertObjectToFormUrlEncodedBytes(userAccountData))
-                .sessionAttr("user", userAccountData)
+                .param(WebTestConstants.FORM_FIELD_EMAIL, email)
+                .param(WebTestConstants.FORM_FIELD_FIRST_NAME, firstName)
+                .param(WebTestConstants.FORM_FIELD_LAST_NAME, lastName)
+                .param(WebTestConstants.FORM_FIELD_PASSWORD, PASSWORD)
+                .param(WebTestConstants.FORM_FIELD_PASSWORD_VERIFICATION, PASSWORD)
+                .sessionAttr(WebTestConstants.SESSION_ATTRIBUTE_USER_FORM, new RegistrationForm())
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/registrationForm"))
                 .andExpect(forwardedUrl("/WEB-INF/jsp/user/registrationForm.jsp"))
-                .andExpect(model().attribute("user", allOf(
-                        hasProperty("email", is(email)),
-                        hasProperty("firstName", is(firstName)),
-                        hasProperty("lastName", is(lastName)),
-                        hasProperty("password", is(PASSWORD)),
-                        hasProperty("passwordVerification", is(PASSWORD)),
-                        hasProperty("signInProvider", isEmptyOrNullString())
+                .andExpect(model().attribute(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM, allOf(
+                        hasProperty(WebTestConstants.FORM_FIELD_EMAIL, is(email)),
+                        hasProperty(WebTestConstants.FORM_FIELD_FIRST_NAME, is(firstName)),
+                        hasProperty(WebTestConstants.FORM_FIELD_LAST_NAME, is(lastName)),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD, is(PASSWORD)),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD_VERIFICATION, is(PASSWORD)),
+                        hasProperty(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, isEmptyOrNullString())
                 )))
-                .andExpect(model().attributeHasFieldErrors("user", "email", "firstName", "lastName"));
+                .andExpect(model().attributeHasFieldErrors(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM, 
+                        WebTestConstants.FORM_FIELD_EMAIL, 
+                        WebTestConstants.FORM_FIELD_FIRST_NAME, 
+                        WebTestConstants.FORM_FIELD_LAST_NAME
+                ));
 
         assertThat(SecurityContextHolder.getContext()).userIsAnonymous();
         verifyZeroInteractions(userServiceMock);
@@ -218,31 +226,30 @@ public class RegistrationControllerTest {
 
     @Test
     public void registerUserAccount_NormalRegistrationAndPasswordMismatch_ShouldRenderRegistrationFormWithValidationErrors() throws Exception {
-        RegistrationForm userAccountData = new RegistrationFormBuilder()
-                .email(EMAIL)
-                .firstName(FIRST_NAME)
-                .lastName(LAST_NAME)
-                .password(PASSWORD)
-                .passwordVerification(PASSWORD_VERIFICATION)
-                .build();
-
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content(TestUtil.convertObjectToFormUrlEncodedBytes(userAccountData))
-                .sessionAttr("user", userAccountData)
+                .param(WebTestConstants.FORM_FIELD_EMAIL, EMAIL)
+                .param(WebTestConstants.FORM_FIELD_FIRST_NAME, FIRST_NAME)
+                .param(WebTestConstants.FORM_FIELD_LAST_NAME, LAST_NAME)
+                .param(WebTestConstants.FORM_FIELD_PASSWORD, PASSWORD)
+                .param(WebTestConstants.FORM_FIELD_PASSWORD_VERIFICATION, PASSWORD_VERIFICATION)
+                .sessionAttr(WebTestConstants.SESSION_ATTRIBUTE_USER_FORM, new RegistrationForm())
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/registrationForm"))
                 .andExpect(forwardedUrl("/WEB-INF/jsp/user/registrationForm.jsp"))
-                .andExpect(model().attribute("user", allOf(
-                        hasProperty("email", is(EMAIL)),
-                        hasProperty("firstName", is(FIRST_NAME)),
-                        hasProperty("lastName", is(LAST_NAME)),
-                        hasProperty("password", is(PASSWORD)),
-                        hasProperty("passwordVerification", is(PASSWORD_VERIFICATION)),
-                        hasProperty("signInProvider", isEmptyOrNullString())
+                .andExpect(model().attribute(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM, allOf(
+                        hasProperty(WebTestConstants.FORM_FIELD_EMAIL, is(EMAIL)),
+                        hasProperty(WebTestConstants.FORM_FIELD_FIRST_NAME, is(FIRST_NAME)),
+                        hasProperty(WebTestConstants.FORM_FIELD_LAST_NAME, is(LAST_NAME)),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD, is(PASSWORD)),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD_VERIFICATION, is(PASSWORD_VERIFICATION)),
+                        hasProperty(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, isEmptyOrNullString())
                 )))
-                .andExpect(model().attributeHasFieldErrors("user", "password", "passwordVerification"));
+                .andExpect(model().attributeHasFieldErrors(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM,
+                        WebTestConstants.FORM_FIELD_PASSWORD,
+                        WebTestConstants.FORM_FIELD_PASSWORD
+                ));
 
         assertThat(SecurityContextHolder.getContext()).userIsAnonymous();
         verifyZeroInteractions(userServiceMock);
@@ -250,67 +257,69 @@ public class RegistrationControllerTest {
 
     @Test
     public void registerUserAccount_NormalRegistrationAndEmailExists_ShouldRenderRegistrationFormWithFieldError() throws Exception {
-        RegistrationForm userAccountData = new RegistrationFormBuilder()
-                .email(EMAIL)
-                .firstName(FIRST_NAME)
-                .lastName(LAST_NAME)
-                .password(PASSWORD)
-                .passwordVerification(PASSWORD)
-                .build();
-
-        when(userServiceMock.registerNewUserAccount(userAccountData)).thenThrow(new DuplicateEmailException(""));
+        when(userServiceMock.registerNewUserAccount(isA(RegistrationForm.class))).thenThrow(new DuplicateEmailException(""));
 
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content(TestUtil.convertObjectToFormUrlEncodedBytes(userAccountData))
-                .sessionAttr("user", userAccountData)
+                .param(WebTestConstants.FORM_FIELD_EMAIL, EMAIL)
+                .param(WebTestConstants.FORM_FIELD_FIRST_NAME, FIRST_NAME)
+                .param(WebTestConstants.FORM_FIELD_LAST_NAME, LAST_NAME)
+                .param(WebTestConstants.FORM_FIELD_PASSWORD, PASSWORD)
+                .param(WebTestConstants.FORM_FIELD_PASSWORD_VERIFICATION, PASSWORD)
+                .sessionAttr(WebTestConstants.SESSION_ATTRIBUTE_USER_FORM, new RegistrationForm())
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/registrationForm"))
                 .andExpect(forwardedUrl("/WEB-INF/jsp/user/registrationForm.jsp"))
-                .andExpect(model().attribute("user", allOf(
-                        hasProperty("email", is(EMAIL)),
-                        hasProperty("firstName", is(FIRST_NAME)),
-                        hasProperty("lastName", is(LAST_NAME)),
-                        hasProperty("password", is(PASSWORD)),
-                        hasProperty("passwordVerification", is(PASSWORD)),
-                        hasProperty("signInProvider", isEmptyOrNullString())
+                .andExpect(model().attribute(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM, allOf(
+                        hasProperty(WebTestConstants.FORM_FIELD_EMAIL, is(EMAIL)),
+                        hasProperty(WebTestConstants.FORM_FIELD_FIRST_NAME, is(FIRST_NAME)),
+                        hasProperty(WebTestConstants.FORM_FIELD_LAST_NAME, is(LAST_NAME)),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD, is(PASSWORD)),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD, is(PASSWORD)),
+                        hasProperty(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, isEmptyOrNullString())
                 )))
-                .andExpect(model().attributeHasFieldErrors("user", "email"));
+                .andExpect(model().attributeHasFieldErrors(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM, WebTestConstants.FORM_FIELD_EMAIL));
 
         assertThat(SecurityContextHolder.getContext()).userIsAnonymous();
 
-        verify(userServiceMock, times(1)).registerNewUserAccount(userAccountData);
+        ArgumentCaptor<RegistrationForm> registrationFormArgument = ArgumentCaptor.forClass(RegistrationForm.class);
+        verify(userServiceMock, times(1)).registerNewUserAccount(registrationFormArgument.capture());
         verifyNoMoreInteractions(userServiceMock);
+
+        RegistrationForm formObject = registrationFormArgument.getValue();
+        assertThatRegistrationForm(formObject)
+                .isNormalRegistration()
+                .hasEmail(EMAIL)
+                .hasFirstName(FIRST_NAME)
+                .hasLastName(LAST_NAME)
+                .hasPassword(PASSWORD)
+                .hasPasswordVerification(PASSWORD);
     }
 
     @Test
     public void registerUserAccount_NormalRegistrationAndMalformedEmail_ShouldRenderRegistrationFormWithValidationError() throws Exception {
-        RegistrationForm userAccountData = new RegistrationFormBuilder()
-                .email(MALFORMED_EMAIL)
-                .firstName(FIRST_NAME)
-                .lastName(LAST_NAME)
-                .password(PASSWORD)
-                .passwordVerification(PASSWORD)
-                .build();
-
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content(TestUtil.convertObjectToFormUrlEncodedBytes(userAccountData))
-                .sessionAttr("user", userAccountData)
+                .param(WebTestConstants.FORM_FIELD_EMAIL, MALFORMED_EMAIL)
+                .param(WebTestConstants.FORM_FIELD_FIRST_NAME, FIRST_NAME)
+                .param(WebTestConstants.FORM_FIELD_LAST_NAME, LAST_NAME)
+                .param(WebTestConstants.FORM_FIELD_PASSWORD, PASSWORD)
+                .param(WebTestConstants.FORM_FIELD_PASSWORD_VERIFICATION, PASSWORD)
+                .sessionAttr(WebTestConstants.SESSION_ATTRIBUTE_USER_FORM, new RegistrationForm())
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/registrationForm"))
                 .andExpect(forwardedUrl("/WEB-INF/jsp/user/registrationForm.jsp"))
-                .andExpect(model().attribute("user", allOf(
-                        hasProperty("email", is(MALFORMED_EMAIL)),
-                        hasProperty("firstName", is(FIRST_NAME)),
-                        hasProperty("lastName", is(LAST_NAME)),
-                        hasProperty("password", is(PASSWORD)),
-                        hasProperty("passwordVerification", is(PASSWORD)),
-                        hasProperty("signInProvider", isEmptyOrNullString())
+                .andExpect(model().attribute(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM, allOf(
+                        hasProperty(WebTestConstants.FORM_FIELD_EMAIL, is(MALFORMED_EMAIL)),
+                        hasProperty(WebTestConstants.FORM_FIELD_FIRST_NAME, is(FIRST_NAME)),
+                        hasProperty(WebTestConstants.FORM_FIELD_LAST_NAME, is(LAST_NAME)),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD, is(PASSWORD)),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD, is(PASSWORD)),
+                        hasProperty(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, isEmptyOrNullString())
                 )))
-                .andExpect(model().attributeHasFieldErrors("user", "email"));
+                .andExpect(model().attributeHasFieldErrors(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM, WebTestConstants.FORM_FIELD_EMAIL));
 
         assertThat(SecurityContextHolder.getContext()).userIsAnonymous();
 
@@ -319,14 +328,6 @@ public class RegistrationControllerTest {
 
     @Test
     public void registerUserAccount_NormalRegistration_ShouldCreateNewUserAccountAndRenderHomePage() throws Exception {
-        RegistrationForm userAccountData = new RegistrationFormBuilder()
-                .email(EMAIL)
-                .firstName(FIRST_NAME)
-                .lastName(LAST_NAME)
-                .password(PASSWORD)
-                .passwordVerification(PASSWORD)
-                .build();
-
         User registered = new UserBuilder()
                 .id(1L)
                 .email(EMAIL)
@@ -335,12 +336,16 @@ public class RegistrationControllerTest {
                 .password(PASSWORD)
                 .build();
 
-        when(userServiceMock.registerNewUserAccount(userAccountData)).thenReturn(registered);
+        when(userServiceMock.registerNewUserAccount(isA(RegistrationForm.class))).thenReturn(registered);
 
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content(TestUtil.convertObjectToFormUrlEncodedBytes(userAccountData))
-                .sessionAttr("user", userAccountData)
+                .param(WebTestConstants.FORM_FIELD_EMAIL, EMAIL)
+                .param(WebTestConstants.FORM_FIELD_FIRST_NAME, FIRST_NAME)
+                .param(WebTestConstants.FORM_FIELD_LAST_NAME, LAST_NAME)
+                .param(WebTestConstants.FORM_FIELD_PASSWORD, PASSWORD)
+                .param(WebTestConstants.FORM_FIELD_PASSWORD_VERIFICATION, PASSWORD)
+                .sessionAttr(WebTestConstants.SESSION_ATTRIBUTE_USER_FORM, new RegistrationForm())
         )
                 .andExpect(status().isMovedTemporarily())
                 .andExpect(redirectedUrl("/"));
@@ -350,8 +355,18 @@ public class RegistrationControllerTest {
                 .loggedInUserHasPassword(registered.getPassword())
                 .loggedInUserIsRegisteredByUsingNormalRegistration();
 
-        verify(userServiceMock, times(1)).registerNewUserAccount(userAccountData);
+        ArgumentCaptor<RegistrationForm> registrationFormArgument = ArgumentCaptor.forClass(RegistrationForm.class);
+        verify(userServiceMock, times(1)).registerNewUserAccount(registrationFormArgument.capture());
         verifyNoMoreInteractions(userServiceMock);
+
+        RegistrationForm formObject = registrationFormArgument.getValue();
+        assertThatRegistrationForm(formObject)
+                .isNormalRegistration()
+                .hasEmail(EMAIL)
+                .hasFirstName(FIRST_NAME)
+                .hasLastName(LAST_NAME)
+                .hasPassword(PASSWORD)
+                .hasPasswordVerification(PASSWORD);
     }
 
     @Test
@@ -365,28 +380,28 @@ public class RegistrationControllerTest {
                     .lastName(LAST_NAME)
                 .build();
 
-        RegistrationForm userAccountData = new RegistrationFormBuilder()
-                .signInProvider(SIGN_IN_PROVIDER)
-                .build();
-
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content(TestUtil.convertObjectToFormUrlEncodedBytes(userAccountData))
+                .param(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, SIGN_IN_PROVIDER.name())
                 .sessionAttr(ProviderSignInAttempt.SESSION_ATTRIBUTE, socialSignIn)
-                .sessionAttr("user", userAccountData)
+                .sessionAttr(WebTestConstants.SESSION_ATTRIBUTE_USER_FORM, new RegistrationForm())
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/registrationForm"))
                 .andExpect(forwardedUrl("/WEB-INF/jsp/user/registrationForm.jsp"))
-                .andExpect(model().attribute("user", allOf(
-                        hasProperty("email", isEmptyOrNullString()),
-                        hasProperty("firstName", isEmptyOrNullString()),
-                        hasProperty("lastName", isEmptyOrNullString()),
-                        hasProperty("password", isEmptyOrNullString()),
-                        hasProperty("passwordVerification", isEmptyOrNullString()),
-                        hasProperty("signInProvider", is(SIGN_IN_PROVIDER))
+                .andExpect(model().attribute(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM, allOf(
+                        hasProperty(WebTestConstants.FORM_FIELD_EMAIL, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_FIRST_NAME, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_LAST_NAME, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, is(SIGN_IN_PROVIDER))
                 )))
-                .andExpect(model().attributeHasFieldErrors("user", "email", "firstName", "lastName"));
+                .andExpect(model().attributeHasFieldErrors(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM,
+                        WebTestConstants.FORM_FIELD_EMAIL,
+                        WebTestConstants.FORM_FIELD_FIRST_NAME,
+                        WebTestConstants.FORM_FIELD_LAST_NAME
+                ));
 
         assertThat(SecurityContextHolder.getContext()).userIsAnonymous();
         assertThatSignIn(socialSignIn).createdNoConnections();
@@ -408,31 +423,31 @@ public class RegistrationControllerTest {
         String firstName = TestUtil.createStringWithLength(101);
         String lastName = TestUtil.createStringWithLength(101);
 
-        RegistrationForm userAccountData = new RegistrationFormBuilder()
-                .email(email)
-                .firstName(firstName)
-                .lastName(lastName)
-                .signInProvider(SIGN_IN_PROVIDER)
-                .build();
-
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content(TestUtil.convertObjectToFormUrlEncodedBytes(userAccountData))
+                .param(WebTestConstants.FORM_FIELD_EMAIL, email)
+                .param(WebTestConstants.FORM_FIELD_FIRST_NAME, firstName)
+                .param(WebTestConstants.FORM_FIELD_LAST_NAME, lastName)
+                .param(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, SIGN_IN_PROVIDER.name())
                 .sessionAttr(ProviderSignInAttempt.SESSION_ATTRIBUTE, socialSignIn)
-                .sessionAttr("user", userAccountData)
+                .sessionAttr(WebTestConstants.SESSION_ATTRIBUTE_USER_FORM, new RegistrationForm())
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/registrationForm"))
                 .andExpect(forwardedUrl("/WEB-INF/jsp/user/registrationForm.jsp"))
-                .andExpect(model().attribute("user", allOf(
-                        hasProperty("email", is(email)),
-                        hasProperty("firstName", is(firstName)),
-                        hasProperty("lastName", is(lastName)),
-                        hasProperty("password", isEmptyOrNullString()),
-                        hasProperty("passwordVerification", isEmptyOrNullString()),
-                        hasProperty("signInProvider", is(SIGN_IN_PROVIDER))
+                .andExpect(model().attribute(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM, allOf(
+                        hasProperty(WebTestConstants.FORM_FIELD_EMAIL, is(email)),
+                        hasProperty(WebTestConstants.FORM_FIELD_FIRST_NAME, is(firstName)),
+                        hasProperty(WebTestConstants.FORM_FIELD_LAST_NAME, is(lastName)),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, is(SIGN_IN_PROVIDER))
                 )))
-                .andExpect(model().attributeHasFieldErrors("user", "email", "firstName", "lastName"));
+                .andExpect(model().attributeHasFieldErrors(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM,
+                        WebTestConstants.FORM_FIELD_EMAIL,
+                        WebTestConstants.FORM_FIELD_FIRST_NAME,
+                        WebTestConstants.FORM_FIELD_LAST_NAME
+                ));
 
         assertThat(SecurityContextHolder.getContext()).userIsAnonymous();
         assertThatSignIn(socialSignIn).createdNoConnections();
@@ -450,31 +465,27 @@ public class RegistrationControllerTest {
                     .lastName(LAST_NAME)
                 .build();
 
-        RegistrationForm userAccountData = new RegistrationFormBuilder()
-                .email(MALFORMED_EMAIL)
-                .firstName(FIRST_NAME)
-                .lastName(LAST_NAME)
-                .signInProvider(SIGN_IN_PROVIDER)
-                .build();
-
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content(TestUtil.convertObjectToFormUrlEncodedBytes(userAccountData))
+                .param(WebTestConstants.FORM_FIELD_EMAIL, MALFORMED_EMAIL)
+                .param(WebTestConstants.FORM_FIELD_FIRST_NAME, FIRST_NAME)
+                .param(WebTestConstants.FORM_FIELD_LAST_NAME, LAST_NAME)
+                .param(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, SIGN_IN_PROVIDER.name())
                 .sessionAttr(ProviderSignInAttempt.SESSION_ATTRIBUTE, socialSignIn)
-                .sessionAttr("user", userAccountData)
+                .sessionAttr(WebTestConstants.SESSION_ATTRIBUTE_USER_FORM, new RegistrationForm())
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/registrationForm"))
                 .andExpect(forwardedUrl("/WEB-INF/jsp/user/registrationForm.jsp"))
-                .andExpect(model().attribute("user", allOf(
-                        hasProperty("email", is(MALFORMED_EMAIL)),
-                        hasProperty("firstName", is(FIRST_NAME)),
-                        hasProperty("lastName", is(LAST_NAME)),
-                        hasProperty("password", isEmptyOrNullString()),
-                        hasProperty("passwordVerification", isEmptyOrNullString()),
-                        hasProperty("signInProvider", is(SIGN_IN_PROVIDER))
+                .andExpect(model().attribute(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM, allOf(
+                        hasProperty(WebTestConstants.FORM_FIELD_EMAIL, is(MALFORMED_EMAIL)),
+                        hasProperty(WebTestConstants.FORM_FIELD_FIRST_NAME, is(FIRST_NAME)),
+                        hasProperty(WebTestConstants.FORM_FIELD_LAST_NAME, is(LAST_NAME)),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, is(SIGN_IN_PROVIDER))
                 )))
-                .andExpect(model().attributeHasFieldErrors("user", "email"));
+                .andExpect(model().attributeHasFieldErrors(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM, WebTestConstants.FORM_FIELD_EMAIL));
 
         assertThat(SecurityContextHolder.getContext()).userIsAnonymous();
         assertThatSignIn(socialSignIn).createdNoConnections();
@@ -492,39 +503,45 @@ public class RegistrationControllerTest {
                     .lastName(LAST_NAME)
                 .build();
 
-        RegistrationForm userAccountData = new RegistrationFormBuilder()
-                .email(EMAIL)
-                .firstName(FIRST_NAME)
-                .lastName(LAST_NAME)
-                .signInProvider(SIGN_IN_PROVIDER)
-                .build();
-
-        when(userServiceMock.registerNewUserAccount(userAccountData)).thenThrow(new DuplicateEmailException(""));
+        when(userServiceMock.registerNewUserAccount(isA(RegistrationForm.class))).thenThrow(new DuplicateEmailException(""));
 
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content(TestUtil.convertObjectToFormUrlEncodedBytes(userAccountData))
+                .param(WebTestConstants.FORM_FIELD_EMAIL, EMAIL)
+                .param(WebTestConstants.FORM_FIELD_FIRST_NAME, FIRST_NAME)
+                .param(WebTestConstants.FORM_FIELD_LAST_NAME, LAST_NAME)
+                .param(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, SIGN_IN_PROVIDER.name())
                 .sessionAttr(ProviderSignInAttempt.SESSION_ATTRIBUTE, socialSignIn)
-                .sessionAttr("user", userAccountData)
+                .sessionAttr(WebTestConstants.SESSION_ATTRIBUTE_USER_FORM, new RegistrationForm())
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/registrationForm"))
                 .andExpect(forwardedUrl("/WEB-INF/jsp/user/registrationForm.jsp"))
-                .andExpect(model().attribute("user", allOf(
-                        hasProperty("email", is(EMAIL)),
-                        hasProperty("firstName", is(FIRST_NAME)),
-                        hasProperty("lastName", is(LAST_NAME)),
-                        hasProperty("password", isEmptyOrNullString()),
-                        hasProperty("passwordVerification", isEmptyOrNullString()),
-                        hasProperty("signInProvider", is(SIGN_IN_PROVIDER))
+                .andExpect(model().attribute(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM, allOf(
+                        hasProperty(WebTestConstants.FORM_FIELD_EMAIL, is(EMAIL)),
+                        hasProperty(WebTestConstants.FORM_FIELD_FIRST_NAME, is(FIRST_NAME)),
+                        hasProperty(WebTestConstants.FORM_FIELD_LAST_NAME, is(LAST_NAME)),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_PASSWORD, isEmptyOrNullString()),
+                        hasProperty(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, is(SIGN_IN_PROVIDER))
                 )))
-                .andExpect(model().attributeHasFieldErrors("user", "email"));
+                .andExpect(model().attributeHasFieldErrors(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM, WebTestConstants.FORM_FIELD_EMAIL));
 
         assertThat(SecurityContextHolder.getContext()).userIsAnonymous();
         assertThatSignIn(socialSignIn).createdNoConnections();
 
-        verify(userServiceMock, times(1)).registerNewUserAccount(userAccountData);
+        ArgumentCaptor<RegistrationForm> registrationFormArgument = ArgumentCaptor.forClass(RegistrationForm.class);
+        verify(userServiceMock, times(1)).registerNewUserAccount(registrationFormArgument.capture());
         verifyNoMoreInteractions(userServiceMock);
+
+        RegistrationForm formObject = registrationFormArgument.getValue();
+        assertThatRegistrationForm(formObject)
+                .isSocialSignInWithSignInProvider(SIGN_IN_PROVIDER)
+                .hasEmail(EMAIL)
+                .hasFirstName(FIRST_NAME)
+                .hasLastName(LAST_NAME)
+                .hasNoPassword()
+                .hasNoPasswordVerification();
     }
 
     @Test
@@ -538,13 +555,6 @@ public class RegistrationControllerTest {
                     .lastName(LAST_NAME)
                 .build();
 
-        RegistrationForm userAccountData = new RegistrationFormBuilder()
-                .email(EMAIL)
-                .firstName(FIRST_NAME)
-                .lastName(LAST_NAME)
-                .signInProvider(SIGN_IN_PROVIDER)
-                .build();
-
         User registered = new UserBuilder()
                 .id(1L)
                 .email(EMAIL)
@@ -553,13 +563,16 @@ public class RegistrationControllerTest {
                 .signInProvider(SIGN_IN_PROVIDER)
                 .build();
 
-        when(userServiceMock.registerNewUserAccount(userAccountData)).thenReturn(registered);
+        when(userServiceMock.registerNewUserAccount(isA(RegistrationForm.class))).thenReturn(registered);
 
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content(TestUtil.convertObjectToFormUrlEncodedBytes(userAccountData))
+                .param(WebTestConstants.FORM_FIELD_EMAIL, EMAIL)
+                .param(WebTestConstants.FORM_FIELD_FIRST_NAME, FIRST_NAME)
+                .param(WebTestConstants.FORM_FIELD_LAST_NAME, LAST_NAME)
+                .param(WebTestConstants.FORM_FIELD_SIGN_IN_PROVIDER, SIGN_IN_PROVIDER.name())
                 .sessionAttr(ProviderSignInAttempt.SESSION_ATTRIBUTE, socialSignIn)
-                .sessionAttr("user", userAccountData)
+                .sessionAttr(WebTestConstants.MODEL_ATTRIBUTE_USER_FORM, new RegistrationForm())
         )
                 .andExpect(status().isMovedTemporarily())
                 .andExpect(redirectedUrl("/"));
@@ -569,7 +582,17 @@ public class RegistrationControllerTest {
                 .loggedInUserIsSignedInByUsingSocialProvider(SIGN_IN_PROVIDER);
         assertThatSignIn(socialSignIn).createdConnectionForUserId(EMAIL);
 
-        verify(userServiceMock, times(1)).registerNewUserAccount(userAccountData);
+        ArgumentCaptor<RegistrationForm> registrationFormArgument = ArgumentCaptor.forClass(RegistrationForm.class);
+        verify(userServiceMock, times(1)).registerNewUserAccount(registrationFormArgument.capture());
         verifyNoMoreInteractions(userServiceMock);
+
+        RegistrationForm formObject = registrationFormArgument.getValue();
+        assertThatRegistrationForm(formObject)
+                .isSocialSignInWithSignInProvider(SIGN_IN_PROVIDER)
+                .hasEmail(EMAIL)
+                .hasFirstName(FIRST_NAME)
+                .hasLastName(LAST_NAME)
+                .hasNoPassword()
+                .hasNoPasswordVerification();
     }
 }

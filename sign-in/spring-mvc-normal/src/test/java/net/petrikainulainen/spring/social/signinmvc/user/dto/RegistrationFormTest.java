@@ -3,7 +3,7 @@ package net.petrikainulainen.spring.social.signinmvc.user.dto;
 import net.petrikainulainen.spring.social.signinmvc.user.model.SocialMediaService;
 import org.junit.Test;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Petri Kainulainen
@@ -24,7 +24,7 @@ public class RegistrationFormTest {
     @Test
     public void isNormalRegistration_SocialProviderSet_ShouldReturnFalse() {
         RegistrationForm dto = new RegistrationFormBuilder()
-                .signInProvider(SIGN_IN_PROVIDER)
+                .isSocialSignInViaSignInProvider(SIGN_IN_PROVIDER)
                 .build();
 
         boolean isNormalRegistration = dto.isNormalRegistration();
@@ -44,7 +44,7 @@ public class RegistrationFormTest {
     @Test
     public void isSocialSignIn_SocialProviderSet_ShouldReturnTrue() {
         RegistrationForm dto = new RegistrationFormBuilder()
-                .signInProvider(SIGN_IN_PROVIDER)
+                .isSocialSignInViaSignInProvider(SIGN_IN_PROVIDER)
                 .build();
 
         boolean isSocialSignIn = dto.isSocialSignIn();

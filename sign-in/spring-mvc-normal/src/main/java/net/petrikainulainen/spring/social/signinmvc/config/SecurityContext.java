@@ -70,7 +70,6 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
                         .antMatchers(
                                 "/auth/**",
                                 "/login",
-                                "/signin/**",
                                 "/signup/**",
                                 "/user/register/**"
                         ).permitAll()

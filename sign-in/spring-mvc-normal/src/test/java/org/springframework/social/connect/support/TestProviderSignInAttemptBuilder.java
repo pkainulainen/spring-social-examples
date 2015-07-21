@@ -1,9 +1,6 @@
 package org.springframework.social.connect.support;
 
-import org.springframework.social.connect.Connection;
-import org.springframework.social.connect.ConnectionData;
-import org.springframework.social.connect.UserProfile;
-import org.springframework.social.connect.UserProfileBuilder;
+import org.springframework.social.connect.*;
 import org.springframework.social.connect.web.TestProviderSignInAttempt;
 
 /**
@@ -34,6 +31,8 @@ public class TestProviderSignInAttemptBuilder {
     private String refreshToken;
 
     private String secret;
+
+    private UsersConnectionRepository usersConnectionRepository;
 
     public TestProviderSignInAttemptBuilder() {
 
@@ -103,6 +102,11 @@ public class TestProviderSignInAttemptBuilder {
         return this;
     }
 
+    public TestProviderSignInAttemptBuilder usersConnectionRepository(UsersConnectionRepository usersConnectionRepository) {
+        this.usersConnectionRepository = usersConnectionRepository;
+        return this;
+    }
+
     public TestProviderSignInAttemptBuilder userProfile() {
         return this;
     }
@@ -126,6 +130,6 @@ public class TestProviderSignInAttemptBuilder {
 
         Connection connection = new TestConnection(connectionData, userProfile);
 
-        return new TestProviderSignInAttempt(connection);
+        return new TestProviderSignInAttempt(connection, usersConnectionRepository);
     }
 }
