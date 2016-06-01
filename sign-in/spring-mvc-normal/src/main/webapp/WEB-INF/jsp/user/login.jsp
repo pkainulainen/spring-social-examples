@@ -24,6 +24,7 @@
             </c:if>
             <form action="${pageContext.request.contextPath}/login/authenticate" method="POST" role="form">
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                <input type="hidden" name="isRegularLogin" value="true" />
                 <div class="row">
                     <div id="form-group-email" class="form-group col-lg-4">
                         <label class="control-label" for="user-email"><spring:message code="label.user.email"/>:</label>
@@ -35,6 +36,11 @@
                     <div id="form-group-password" class="form-group col-lg-4">
                         <label class="control-label" for="user-password"><spring:message code="label.user.password"/>:</label>
                         <input id="user-password" name="password" type="password" class="form-control"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="form-group-rememberme" class="col-lg-4">
+                        <input type="checkbox" name="rememberme" value="true" checked="checked"> Remember me
                     </div>
                 </div>
                 <div class="row">

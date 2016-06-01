@@ -1,8 +1,12 @@
 package net.petrikainulainen.spring.social.signinmvc.config;
 
+import javax.sql.DataSource;
+
+import net.petrikainulainen.spring.social.signinmvc.security.service.CustomPersistentTokenBasedRememberMeServices;
 import net.petrikainulainen.spring.social.signinmvc.security.service.RepositoryUserDetailsService;
 import net.petrikainulainen.spring.social.signinmvc.security.service.SimpleSocialUserDetailsService;
 import net.petrikainulainen.spring.social.signinmvc.user.repository.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +18,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.social.security.SocialUserDetailsService;
 import org.springframework.social.security.SpringSocialConfigurer;
 
@@ -26,6 +32,10 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserRepository userRepository;
+    
+    
+    @Autowired
+  	DataSource dataSource;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -61,6 +71,11 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
                         ).permitAll()
                         //The rest of the our application is protected.
                         .antMatchers("/**").hasRole("USER")
+                //Adds the CustomPersistentTokenBasedRememberMeServices.
+                .and()
+                		.rememberMe()
+                			.key("myRememberMeKey")
+                			.rememberMeServices(customPersistentTokenBasedRememberMeServices())
                 //Adds the SocialAuthenticationFilter to Spring Security's filter chain.
                 .and()
                     .apply(new SpringSocialConfigurer());
@@ -101,4 +116,27 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
     public UserDetailsService userDetailsService() {
         return new RepositoryUserDetailsService(userRepository);
     }
+    
+    /**
+     * This bean is the custom persistent token-based remember me service which handles persistent remember
+     * using browser cookie for both regular login and social login.
+     */
+    @Bean
+    public CustomPersistentTokenBasedRememberMeServices customPersistentTokenBasedRememberMeServices(){
+    	CustomPersistentTokenBasedRememberMeServices rememberMeServices = new CustomPersistentTokenBasedRememberMeServices("myRememberMeKey", userDetailsService(), persistentTokenRepository());
+    	rememberMeServices.setParameter("rememberme");
+    	rememberMeServices.setTokenValiditySeconds(1209600);
+    	return rememberMeServices;
+    }
+    
+    /**
+     * This bean is the JDBC token repository for remember me services.
+     */
+    @Bean
+  	public PersistentTokenRepository persistentTokenRepository() {
+  		JdbcTokenRepositoryImpl db = new JdbcTokenRepositoryImpl();
+  		db.setCreateTableOnStartup(false);
+  		db.setDataSource(dataSource);
+  		return db;
+  	}
 }
